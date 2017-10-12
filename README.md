@@ -1,10 +1,36 @@
 # MesLocationsVacances
 
-_description_
+Notre site de commerce électronique _MesLocationsVacances_ permet la recherche et location de chambres (appart'hôtel) ou gîtes entier ainsi que d'activité pour les vacances en famille ou entre amis.
 
-## Installation
+Ce projet s'inscrit dans le cadre du cours [ECOM](https://air.imag.fr/index.php/ECOM-RICM) à Polytech Grenoble.
 
-_Provide code examples and explanations of how to get the project._
+> Lien vers la [Fiche du projet](https://air.imag.fr/index.php/ECOM_RICM5_Groupe4_2017)
+
+## Installation / Quick launch locally
+
+You should have **Docker** and **Wildfly** (v10+) installed.
+
+1) Clone the project:
+```
+git clone https://github.com/ECOM2017-MesLocationsVacances/MesLocationsVacances.git
+```
+
+2) Start Wildfly in standalone mode: 
+
+Go to the wildfly directory and execute `./standalone.sh`
+
+3) Start a MySQL docker instance (command below is for Docker but a local installation should work):
+```
+docker run --name mysqldb -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_DATABASE=sample -e MYSQL_ROOT_PASSWORD=supersecret -d mysql
+```
+
+4) Run and deploy the app:
+```
+cd MesLocationsVacances
+mvn wildfly:deploy
+```
+
+5) That's it! Just open [localhost:8080/MesLocationsVacances](http://localhost:8080/MesLocationsVacances) in your browser and enjoy :tada:
 
 ## API Reference
 

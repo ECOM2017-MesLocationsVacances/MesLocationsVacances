@@ -10,21 +10,21 @@ Ce projet s'inscrit dans le cadre du cours [ECOM](https://air.imag.fr/index.php/
 
 You should have **Docker** and **Wildfly** (v10+) installed.
 
-1) Clone the project:
+1) **Clone the project**:
 ```
 git clone https://github.com/ECOM2017-MesLocationsVacances/MesLocationsVacances.git
 ```
 
-2) Start Wildfly in standalone mode: 
+2) **Start Wildfly in standalone mode**: 
 
 Go to the wildfly directory and execute `./standalone.sh`
 
-3) Start a MySQL docker instance (command below is for Docker but a local installation should work):
+3) **Start a MySQL docker instance** (command below is for Docker but a local installation should work):
 ```
 docker run --name mysqldb -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_DATABASE=sample -e MYSQL_ROOT_PASSWORD=supersecret -d mysql
 ```
 
-4) Run and deploy the app:
+4) **Build and deploy the app**:
 ```
 cd MesLocationsVacances
 mvn wildfly:deploy

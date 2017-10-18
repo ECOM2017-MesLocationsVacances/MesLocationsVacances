@@ -6,7 +6,29 @@ Ce projet s'inscrit dans le cadre du cours [ECOM](https://air.imag.fr/index.php/
 
 > Lien vers la [Fiche du projet](https://air.imag.fr/index.php/ECOM_RICM5_Groupe4_2017)
 
-## Installation / Quick launch locally
+## Quick launch (Docker)
+
+You should have **Docker**.
+
+1) **Clone the project**:
+```
+git clone https://github.com/ECOM2017-MesLocationsVacances/MesLocationsVacances.git
+cd MesLocationsVacances
+```
+
+2) **Build the Docker Container**
+```
+docker build -t MesLocationsVacances .
+```
+
+3) **Start the Container**
+```
+docker run -p 8080:8080 MesLocationsVacances
+```
+
+4) That's it! Just open [localhost:8080/MesLocationsVacances](http://localhost:8080/MesLocationsVacances) in your browser and enjoy :tada:
+
+## Installation (Local)
 
 You should have **Docker** and **Wildfly** (v10+) installed.
 
@@ -19,7 +41,7 @@ git clone https://github.com/ECOM2017-MesLocationsVacances/MesLocationsVacances.
 
 Go to the wildfly directory and execute `./standalone.sh`
 
-3) **Start a MySQL docker instance** (command below is for Docker but a local installation should work):
+3) **Start a MySQL docker instance** (the command below is for Docker but a local installation should work):
 ```
 docker run --name mysqldb -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_DATABASE=sample -e MYSQL_ROOT_PASSWORD=supersecret -d mysql
 ```

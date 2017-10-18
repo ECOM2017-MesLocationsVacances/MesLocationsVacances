@@ -20,7 +20,9 @@
 *.zip
 *.tar.gz
 *.rar
+*.iml
 
 # Project folders/files
 target/
 .vscode/
+.idea/

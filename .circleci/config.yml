@@ -6,11 +6,11 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-        name: Build JavaEE application (.war)
+        name: Build JavaEE application
         command: |
           mvn package
-      - setup_remote_docker
       - run:
           name: Install dependencies
           command: |

@@ -1,17 +1,19 @@
-machine:
-  services:
-    - docker
+version: 2
+jobs:
+  build:
+    services:
+      - docker
 
-dependencies:
-  post:
-    - docker build -t $AWS_ACCOUNT_ID.378308689079.dkr.ecr.eu-west-2.amazonaws.com/vacances:latest:$CIRCLE_SHA1 .
+    dependencies:
+      post:
+        - docker build -t $AWS_ACCOUNT_ID.378308689079.dkr.ecr.eu-west-2.amazonaws.com/vacances:latest:$CIRCLE_SHA1 .
 
-test:
-  post:
-    - echo "TODO test"
+    test:
+      post:
+        - echo "TODO test"
 
-deployment:
-  prod:
-    branch: master
-    commands:
-      - ./deploy.sh
+    deployment:
+      prod:
+        branch: master
+        commands:
+          - ./deploy.sh

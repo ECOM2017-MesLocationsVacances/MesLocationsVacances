@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh -eo pipefail
 
 # Credits to https://github.com/circleci/go-ecs-ecr
 
@@ -61,7 +61,7 @@ make_task_def(){
 }
 
 push_ecr_image(){
-	eval $(aws ecr get-login --region eu-west-2)
+	eval $(aws ecr get-login --no-include-email --region eu-west-2)
 	docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:$CIRCLE_SHA1
 }
 

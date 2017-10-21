@@ -1,4 +1,4 @@
-#!/bin/sh -eo pipefail
+#!/bin/sh
 
 # Credits to https://github.com/circleci/go-ecs-ecr
 

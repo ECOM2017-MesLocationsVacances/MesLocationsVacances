@@ -8,9 +8,9 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-        name: Build JavaEE application
-        command: |
-          mvn package
+          name: Build JavaEE application
+          command: |
+            mvn package
       - run:
           name: Install dependencies
           command: |

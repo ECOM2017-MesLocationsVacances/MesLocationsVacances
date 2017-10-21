@@ -13,7 +13,7 @@ configure_aws_cli(){
 
 deploy_cluster() {
 
-    family="meslocationsvacances-task-family"
+    family="meslocationsvacances-webapp-task"
 
     make_task_def
     register_definition
@@ -24,7 +24,6 @@ deploy_cluster() {
     fi
 
     # wait for older revisions to disappear
-    # not really necessary, but nice for demos
     for attempt in {1..30}; do
         if stale=$(aws ecs describe-services --cluster meslocationsvacances-cluster --services meslocationsvacances-service | \
                        $JQ ".services[0].deployments | .[] | select(.taskDefinition != \"$revision\") | .taskDefinition"); then
@@ -43,7 +42,7 @@ deploy_cluster() {
 make_task_def(){
 	task_template='[
 		{
-			"name": "meslocationsvacances-webapp-task",
+			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
 			"memory": 200,

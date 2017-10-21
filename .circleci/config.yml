@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: antoine38660/docker-ce-git-maven
     steps:
       - checkout
       - setup_remote_docker

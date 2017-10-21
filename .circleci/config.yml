@@ -8,7 +8,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build JavaEE application
+          name: Build JavaEE application (mvn package)
           command: |
             mvn package
       - run:
@@ -47,7 +47,7 @@ jobs:
           command: |
             echo "TODO test"
       - deploy:
-          name: Push application Docker image
+          name: Deploy application Docker image to AWS
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               /app/deploy.sh

@@ -15,9 +15,10 @@ jobs:
           name: Install dependencies
           command: |
             apk add --no-cache \
-              py-pip=9.0.0-r1
+              py-pip=9.0.0-r1 \
+              jq
             pip install \
-              awscli==1.11.76
+              awscli==1.11.171
       - restore_cache:
           keys:
             - v1-{{ .Branch }}

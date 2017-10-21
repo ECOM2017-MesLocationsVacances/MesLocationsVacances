@@ -24,7 +24,7 @@ deploy_cluster() {
     fi
 
     # wait for older revisions to disappear
-    for attempt in {1..30}; do
+    for attempt in $(seq 1 30); do
         if stale=$(aws ecs describe-services --cluster meslocationsvacances-cluster --services meslocationsvacances-service | \
                        $JQ ".services[0].deployments | .[] | select(.taskDefinition != \"$revision\") | .taskDefinition"); then
             echo "Waiting for stale deployments:"

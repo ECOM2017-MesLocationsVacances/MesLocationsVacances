@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Credits to https://github.com/circleci/go-ecs-ecr
-
+# Inspired from https://github.com/circleci/go-ecs-ecr
 # more bash-friendly output for jq
 JQ="jq --raw-output --exit-status"
 
@@ -45,12 +44,13 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 200,
-			"cpu": 10,
+			"memory": 300,
+			"cpu": 0,
 			"portMappings": [
 				{
 					"containerPort": 8080,
-					"hostPort": 80
+					"hostPort": 80,
+			                "protocol": "tcp"
 				}
 			]
 		}

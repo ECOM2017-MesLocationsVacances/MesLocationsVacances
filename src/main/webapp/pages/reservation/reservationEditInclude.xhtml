@@ -19,35 +19,34 @@
                 <p:calendar id="startdateEditInput" navigator="true" value="#{reservationBean.reservation.startdate}" label="#{messages.field_label_reservation_startdate}" />
                 <p:message for="startdateEditInput" display="icon" />
 
-                <h:outputLabel value="#{messages.field_label_reservation_duration}:" for="durationEditInput" />
-                <p:inputText value="#{reservationBean.reservation.duration}"  id="durationEditInput" 
-                    label="#{messages.field_label_reservation_duration}" />
-                <p:message for="durationEditInput" display="icon" />
+                <h:outputLabel value="#{messages.field_label_reservation_enddate}:" for="enddateEditInput" />
+                <p:calendar id="enddateEditInput" navigator="true" value="#{reservationBean.reservation.enddate}" label="#{messages.field_label_reservation_enddate}" />
+                <p:message for="enddateEditInput" display="icon" />
 
-                <h:outputLabel value="#{messages.field_label_reservation_hotel}:" for="hotelSelectInput" rendered="#{not hideHotelSelectInput}"/>
-                <h:panelGroup rendered="#{not hideHotelSelectInput}">
-                    <p:selectOneMenu value="#{reservationBean.reservation.hotel}"
-                                    id="hotelSelectInput">
+                <h:outputLabel value="#{messages.field_label_reservation_room}:" for="roomSelectInput" rendered="#{not hideRoomSelectInput}"/>
+                <h:panelGroup rendered="#{not hideRoomSelectInput}">
+                    <p:selectOneMenu value="#{reservationBean.reservation.room}"
+                                    id="roomSelectInput">
                         <f:selectItem noSelectionOption="true" itemLabel="" />
-                        <f:selectItems value="#{reservationBean.hotels}" 
-                                    var="hotel" 
-                                    itemLabel="#{hotel.name}"
-                                    itemValue="#{hotel}" />
-                        <o:converter converterId="omnifaces.SelectItemsConverter" list="#{reservationBean.hotels}" />
+                        <f:selectItems value="#{reservationBean.rooms}" 
+                                    var="room" 
+                                    itemLabel="#{room.name}"
+                                    itemValue="#{room}" />
+                        <o:converter converterId="omnifaces.SelectItemsConverter" list="#{reservationBean.rooms}" />
                     </p:selectOneMenu>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{not hideHotelSelectInput}">
+                <h:panelGroup rendered="#{not hideRoomSelectInput}">
                 
                     <p:commandButton icon="ui-icon-plusthick" title="#{messages.label_create}"
-                              action="#{hotelBean.prepareNewHotel()}"
-                              update=":createHotelFromEditDialog"
+                              action="#{roomBean.prepareNewRoom()}"
+                              update=":createRoomFromEditDialog"
                               resetValues="true"
-                              oncomplete="PF('createHotelFromEditDialogWidget').show()"
-                              rendered="#{applicationBean.componentExists('createHotelFromEditDialog')}"
+                              oncomplete="PF('createRoomFromEditDialogWidget').show()"
+                              rendered="#{applicationBean.componentExists('createRoomFromEditDialog')}"
                               style="vertical-align:top;" partialSubmit="true" process="@this">
                     </p:commandButton>
                     
-                    <p:message for="hotelSelectInput" display="icon" rendered="#{not hideHotelSelectInput}"/>
+                    <p:message for="roomSelectInput" display="icon" rendered="#{not hideRoomSelectInput}"/>
                 </h:panelGroup>
                 
                 <h:outputLabel value="#{messages.field_label_reservation_user}:" for="userSelectInput" rendered="#{not hideUserSelectInput}"/>

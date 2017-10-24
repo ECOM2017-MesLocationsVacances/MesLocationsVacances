@@ -66,13 +66,17 @@ _Describe and show how to run the tests with code examples._
 
 * Antoine Boisadam : [Github](https://github.com/Antoine38660)
 * Maxime D.
+* Timothee L.
 * Lucas L.
 * Douria Z.
 
+## Documentation
+
+You can find the [doc generation guidelines](src/main/webapp/README.md).
 
 ## License
 
-Copyright 2017 Antoine Boisadam, Maxime D., Lucas L., Douria Z.
+Copyright 2017 Antoine Boisadam, Maxime D., Timothee L., Lucas L., Douria Z.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

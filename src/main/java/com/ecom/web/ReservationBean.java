@@ -1,10 +1,10 @@
 package com.ecom.web;
 
-import com.ecom.domain.HotelEntity;
 import com.ecom.domain.ReservationEntity;
+import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
-import com.ecom.service.HotelService;
 import com.ecom.service.ReservationService;
+import com.ecom.service.RoomService;
 import com.ecom.service.security.SecurityWrapper;
 import com.ecom.service.security.UserService;
 import com.ecom.web.util.MessageFactory;
@@ -38,12 +38,12 @@ public class ReservationBean implements Serializable {
     private ReservationService reservationService;
     
     @Inject
-    private HotelService hotelService;
+    private RoomService roomService;
     
     @Inject
     private UserService userService;
     
-    private List<HotelEntity> allHotelsList;
+    private List<RoomEntity> allRoomsList;
     
     private List<UserEntity> allUsersList;
     
@@ -115,25 +115,25 @@ public class ReservationBean implements Serializable {
         reservation = null;
         reservationList = null;
         
-        allHotelsList = null;
+        allRoomsList = null;
         
         allUsersList = null;
         
     }
 
-    // Get a List of all hotel
-    public List<HotelEntity> getHotels() {
-        if (this.allHotelsList == null) {
-            this.allHotelsList = hotelService.findAllHotelEntities();
+    // Get a List of all room
+    public List<RoomEntity> getRooms() {
+        if (this.allRoomsList == null) {
+            this.allRoomsList = roomService.findAllRoomEntities();
         }
-        return this.allHotelsList;
+        return this.allRoomsList;
     }
     
-    // Update hotel of the current reservation
-    public void updateHotel(HotelEntity hotel) {
-        this.reservation.setHotel(hotel);
-        // Maybe we just created and assigned a new hotel. So reset the allHotelList.
-        allHotelsList = null;
+    // Update room of the current reservation
+    public void updateRoom(RoomEntity room) {
+        this.reservation.setRoom(room);
+        // Maybe we just created and assigned a new room. So reset the allRoomList.
+        allRoomsList = null;
     }
     
     // Get a List of all user

@@ -5,5 +5,5 @@ package com.ecom.domain.security;
  * */
 public enum UserRole {
 
-    Administrator, Registered;
+    Administrator, Registered, Manager;
 }

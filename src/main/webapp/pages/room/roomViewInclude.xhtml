@@ -7,13 +7,21 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui">
 
+    <p:panel header="#{messages.label_image}" style="max-width:400px" >
+        <o:graphicImage value="#{roomBean.uploadedImageContents}" dataURI="true"
+            rendered="#{not empty roomBean.uploadedImageContents}" width="200px"/>
+    </p:panel>
+    
     <h:panelGrid columns="2" styleClass="dialog" columnClasses="col1,col2" >
         
         <h:outputText value="#{messages.field_label_room_price}:" />
         <h:outputText value="#{roomBean.room.price}" ><f:convertNumber /></h:outputText>
 
-        <h:outputText value="#{messages.field_label_room_hotel}:" />
-        <h:outputText value="#{roomBean.room.hotel.name}" />
+        <h:outputText value="#{messages.field_label_room_establishment}:" />
+        <h:outputText value="#{roomBean.room.establishment.name}" />
+
+        <h:outputText value="#{messages.field_label_room_name}:" />
+        <h:outputText value="#{roomBean.room.name}" />
 
     </h:panelGrid>
 </html>

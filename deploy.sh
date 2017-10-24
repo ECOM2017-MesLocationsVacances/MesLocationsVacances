@@ -44,13 +44,13 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 300,
-			"cpu": 0,
+			"memory": 956,
+			"cpu": 1,
 			"portMappings": [
 				{
 					"containerPort": 8080,
 					"hostPort": 80,
-			                "protocol": "tcp"
+			        "protocol": "tcp"
 				}
 			]
 		}

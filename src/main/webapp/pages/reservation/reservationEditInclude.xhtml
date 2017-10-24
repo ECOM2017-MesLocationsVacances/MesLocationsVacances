@@ -19,10 +19,9 @@
                 <p:calendar id="startdateEditInput" navigator="true" value="#{reservationBean.reservation.startdate}" label="#{messages.field_label_reservation_startdate}" />
                 <p:message for="startdateEditInput" display="icon" />
 
-                <h:outputLabel value="#{messages.field_label_reservation_duration}:" for="durationEditInput" />
-                <p:inputText value="#{reservationBean.reservation.duration}"  id="durationEditInput" 
-                    label="#{messages.field_label_reservation_duration}" />
-                <p:message for="durationEditInput" display="icon" />
+                <h:outputLabel value="#{messages.field_label_reservation_enddate}:" for="enddateEditInput" />
+                <p:calendar id="enddateEditInput" navigator="true" value="#{reservationBean.reservation.enddate}" label="#{messages.field_label_reservation_enddate}" />
+                <p:message for="enddateEditInput" display="icon" />
 
                 <h:outputLabel value="#{messages.field_label_reservation_room}:" for="roomSelectInput" rendered="#{not hideRoomSelectInput}"/>
                 <h:panelGroup rendered="#{not hideRoomSelectInput}">

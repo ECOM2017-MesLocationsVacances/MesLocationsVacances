@@ -4,11 +4,10 @@ import com.ecom.domain.ReservationEntity;
 import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.io.Serializable;
+import java.util.List;
 
 @Named
 public class ReservationService extends BaseService<ReservationEntity> implements Serializable {
@@ -58,5 +57,4 @@ public class ReservationService extends BaseService<ReservationEntity> implement
     public List<ReservationEntity> findReservationsByUser(UserEntity user) {
         return entityManager.createQuery("SELECT o FROM Reservation o WHERE o.user = :user", ReservationEntity.class).setParameter("user", user).getResultList();
     }
-
 }

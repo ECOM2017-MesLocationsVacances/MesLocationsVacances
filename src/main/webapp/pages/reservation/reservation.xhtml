@@ -50,15 +50,15 @@
             <h:outputText value="#{reservation.startdate}"><f:convertDateTime /></h:outputText>
           </p:column>
 
-          <p:column headerText="#{messages.field_label_reservation_duration}" sortBy="#{reservation.duration}" filterBy="#{reservation.duration}">
+          <p:column headerText="#{messages.field_label_reservation_enddate}" sortBy="#{reservation.enddate}" filterBy="#{reservation.enddate}">
             <f:facet name="filter">
-                <p:inputText id="durationFilter"
-                        onkeypress="if (event.keyCode == 13) {PF('reservationTable').filter(); updateDurationFilter(); return false; }" >
-                    <p:remoteCommand name="updateDurationFilter" update="reservationTable:durationFilter" />
-                    <f:convertNumber integerOnly="true" />
+                <p:inputText id="enddateFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('reservationTable').filter(); updateEnddateFilter(); return false; }" >
+                    <p:remoteCommand name="updateEnddateFilter" update="reservationTable:enddateFilter" />
+                    <f:convertDateTime />
                 </p:inputText>
             </f:facet>
-            <h:outputText value="#{reservation.duration}" ><f:convertNumber /></h:outputText>
+            <h:outputText value="#{reservation.enddate}" ><f:convertDateTime /></h:outputText>
           </p:column>
 
           <p:column headerText="#{messages.field_label_reservation_room}" sortBy="#{reservation.room}" filterBy="#{reservation.room}">

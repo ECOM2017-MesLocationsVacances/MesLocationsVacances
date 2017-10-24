@@ -32,7 +32,7 @@ public class RoomEntity extends BaseEntity implements Serializable {
     @NotNull
     private BigDecimal price;
 
-    @ManyToOne(optional=true)
+    @ManyToOne(optional=false)
     @JoinColumn(name = "ESTABLISHMENT_ID", referencedColumnName = "ID")
     private EstablishmentEntity establishment;
 

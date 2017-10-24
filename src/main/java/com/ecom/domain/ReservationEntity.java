@@ -33,10 +33,10 @@ public class ReservationEntity extends BaseEntity implements Serializable {
     @NotNull
     private Date startdate;
 
-    @Column(name="\"duration\"")
-    @Digits(integer = 4, fraction = 0)
+    @Column(name="\"enddate\"")
+    @Temporal(TemporalType.DATE)
     @NotNull
-    private Integer duration;
+    private Date enddate;
 
     @ManyToOne(optional=true)
     @JoinColumn(name = "ROOM_ID", referencedColumnName = "ID")
@@ -62,12 +62,12 @@ public class ReservationEntity extends BaseEntity implements Serializable {
         this.startdate = startdate;
     }
 
-    public Integer getDuration() {
-        return this.duration;
+    public Date getEnddate() {
+        return enddate;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
     }
 
     public RoomEntity getRoom() {

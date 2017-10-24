@@ -21,9 +21,9 @@ jobs:
           command: |
             xmlfile="/app/src/main/resources/META-INF/persistence.xml"
             xmlcommand="xmlstarlet edit -L -N N='http://xmlns.jcp.org/xml/ns/persistence'"
-            xmlcommand -u "//N:property[@name='javax.persistence.jdbc.url']/@value" -v '$DB_URL' xmlfile
-            xmlcommand -u "//N:property[@name='javax.persistence.jdbc.user']/@value" -v '$DB_USER' xmlfile
-            xmlcommand -u "//N:property[@name='javax.persistence.jdbc.password']/@value" -v '$DB_PASSWORD' xmlfile
+            $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.url']/@value" -v '$DB_URL' $xmlfile
+            $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.user']/@value" -v '$DB_USER' $xmlfile
+            $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.password']/@value" -v '$DB_PASSWORD' $xmlfile
       - run:
           name: Build JavaEE application (mvn package)
           command: |

@@ -1,12 +1,13 @@
 package com.ecom.service;
 
-import com.ecom.domain.HotelEntity;
+import com.ecom.domain.EstablishmentEntity;
 import com.ecom.domain.RoomEntity;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Named;
+import javax.persistence.PersistenceUnitUtil;
 import javax.transaction.Transactional;
 
 @Named
@@ -21,7 +22,7 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
     @Transactional
     public List<RoomEntity> findAllRoomEntities() {
         
-        return entityManager.createQuery("SELECT o FROM Room o ", RoomEntity.class).getResultList();
+        return entityManager.createQuery("SELECT o FROM Room o LEFT JOIN FETCH o.image", RoomEntity.class).getResultList();
     }
     
     @Override
@@ -36,16 +37,36 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
         /* This is called before a Room is deleted. Place here all the
            steps to cut dependencies to other entities */
         
+        this.cutAllRoomReservationsAssignments(room);
+        
+    }
+
+    // Remove all assignments from all reservation a room. Called before delete a room.
+    @Transactional
+    private void cutAllRoomReservationsAssignments(RoomEntity room) {
+        entityManager
+                .createQuery("UPDATE Reservation c SET c.room = NULL WHERE c.room = :p")
+                .setParameter("p", room).executeUpdate();
+    }
+    
+    @Transactional
+    public List<RoomEntity> findAvailableRooms(EstablishmentEntity establishment) {
+        return entityManager.createQuery("SELECT o FROM Room o WHERE o.establishment IS NULL", RoomEntity.class).getResultList();
     }
 
     @Transactional
-    public List<RoomEntity> findAvailableRooms(HotelEntity hotel) {
-        return entityManager.createQuery("SELECT o FROM Room o WHERE o.hotel IS NULL", RoomEntity.class).getResultList();
+    public List<RoomEntity> findRoomsByEstablishment(EstablishmentEntity establishment) {
+        return entityManager.createQuery("SELECT o FROM Room o WHERE o.establishment = :establishment", RoomEntity.class).setParameter("establishment", establishment).getResultList();
     }
 
     @Transactional
-    public List<RoomEntity> findRoomsByHotel(HotelEntity hotel) {
-        return entityManager.createQuery("SELECT o FROM Room o WHERE o.hotel = :hotel", RoomEntity.class).setParameter("hotel", hotel).getResultList();
+    public RoomEntity lazilyLoadImageToRoom(RoomEntity room) {
+        PersistenceUnitUtil u = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
+        if (!u.isLoaded(room, "image") && room.getId() != null) {
+            room = find(room.getId());
+            room.getImage().getId();
+        }
+        return room;
     }
-
+    
 }

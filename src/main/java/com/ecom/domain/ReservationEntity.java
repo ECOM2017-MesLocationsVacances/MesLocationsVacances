@@ -39,8 +39,8 @@ public class ReservationEntity extends BaseEntity implements Serializable {
     private Integer duration;
 
     @ManyToOne(optional=true)
-    @JoinColumn(name = "HOTEL_ID", referencedColumnName = "ID")
-    private HotelEntity hotel;
+    @JoinColumn(name = "ROOM_ID", referencedColumnName = "ID")
+    private RoomEntity room;
 
     @ManyToOne(optional=true)
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
@@ -70,12 +70,12 @@ public class ReservationEntity extends BaseEntity implements Serializable {
         this.duration = duration;
     }
 
-    public HotelEntity getHotel() {
-        return this.hotel;
+    public RoomEntity getRoom() {
+        return this.room;
     }
 
-    public void setHotel(HotelEntity hotel) {
-        this.hotel = hotel;
+    public void setRoom(RoomEntity room) {
+        this.room = room;
     }
 
     public UserEntity getUser() {

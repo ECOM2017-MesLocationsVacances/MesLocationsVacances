@@ -54,6 +54,16 @@ public class TestUsersCreator {
             
             userService.save(registeredUser);
             
+            logger.log(Level.WARNING, "Creating test user 'manager' with password 'manager'.");
+            UserEntity managerUser = new UserEntity();
+            managerUser.setUsername("manager");
+            managerUser.setPassword("manager");
+            managerUser.setRoles(Arrays.asList(new UserRole[]{UserRole.Manager}));
+            managerUser.setStatus(UserStatus.Active);
+            managerUser.setEmail("manager@domain.test");
+            
+            userService.save(managerUser);
+            
         }
     }
 }

@@ -9,41 +9,47 @@
 
         <p:outputPanel styleClass="ui-fluid">
 
+            <p:panel id="roomImage" header="#{messages.label_image}" style="max-width:400px">
+                <o:graphicImage value="#{roomBean.uploadedImageContents}" dataURI="true"
+                    rendered="#{not empty roomBean.uploadedImageContents}" width="200px" />
+                <p:fileUpload mode="advanced" fileLimit="1"
+                    fileUploadListener="#{roomBean.handleImageUpload}" update="roomImage :growlForm:growl"
+                    cancelLabel="#{messages.upload_cancel}" uploadLabel="#{messages.upload_upload}" label="#{messages.upload_choose}"
+                    multiple="false" style="overflow:auto;width:380px"/>
+            </p:panel>
             <p:panelGrid columns="3" columnClasses="ui-grid-col-4,ui-grid-col-6,ui-grid-col-2" layout="grid" style="max-width:400px">
-            
                 <h:outputLabel value="#{messages.field_label_room_price}:" for="priceEditInput" />
                 <p:inputText value="#{roomBean.room.price}" id="priceEditInput" label="#{messages.field_label_room_price}" >
                     <f:convertNumber />
                 </p:inputText>
                 <p:message for="priceEditInput" display="icon" />
-
-                <h:outputLabel value="#{messages.field_label_room_hotel}:" for="hotelSelectInput" rendered="#{not hideHotelSelectInput}"/>
-                <h:panelGroup rendered="#{not hideHotelSelectInput}">
-                    <p:selectOneMenu value="#{roomBean.room.hotel}"
-                                    id="hotelSelectInput">
+                <h:outputLabel value="#{messages.field_label_room_establishment}:" for="establishmentSelectInput" rendered="#{not hideEstablishmentSelectInput}"/>
+                <h:panelGroup rendered="#{not hideEstablishmentSelectInput}">
+                    <p:selectOneMenu value="#{roomBean.room.establishment}"
+                                    id="establishmentSelectInput">
                         <f:selectItem noSelectionOption="true" itemLabel="" />
-                        <f:selectItems value="#{roomBean.hotels}" 
-                                    var="hotel" 
-                                    itemLabel="#{hotel.name}"
-                                    itemValue="#{hotel}" />
-                        <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.hotels}" />
+                        <f:selectItems value="#{roomBean.establishments}" 
+                                    var="establishment" 
+                                    itemLabel="#{establishment.name}"
+                                    itemValue="#{establishment}" />
+                        <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.establishments}" />
                     </p:selectOneMenu>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{not hideHotelSelectInput}">
-                
+                <h:panelGroup rendered="#{not hideEstablishmentSelectInput}">
                     <p:commandButton icon="ui-icon-plusthick" title="#{messages.label_create}"
-                              action="#{hotelBean.prepareNewHotel()}"
-                              update=":createHotelFromEditDialog"
+                              action="#{establishmentBean.prepareNewEstablishment()}"
+                              update=":createEstablishmentFromEditDialog"
                               resetValues="true"
-                              oncomplete="PF('createHotelFromEditDialogWidget').show()"
-                              rendered="#{applicationBean.componentExists('createHotelFromEditDialog')}"
+                              oncomplete="PF('createEstablishmentFromEditDialogWidget').show()"
+                              rendered="#{applicationBean.componentExists('createEstablishmentFromEditDialog')}"
                               style="vertical-align:top;" partialSubmit="true" process="@this">
                     </p:commandButton>
-                    
-                    <p:message for="hotelSelectInput" display="icon" rendered="#{not hideHotelSelectInput}"/>
+                    <p:message for="establishmentSelectInput" display="icon" rendered="#{not hideEstablishmentSelectInput}"/>
                 </h:panelGroup>
-                
+                <h:outputLabel value="#{messages.field_label_room_name}:" for="nameEditInput" />
+                <p:inputText value="#{roomBean.room.name}" id="nameEditInput" 
+                    label="#{messages.field_label_room_name}" />
+                <p:message for="nameEditInput" display="icon" />
             </p:panelGrid>
-
         </p:outputPanel>
 </html>

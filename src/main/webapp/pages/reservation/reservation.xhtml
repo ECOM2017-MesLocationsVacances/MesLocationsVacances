@@ -61,20 +61,20 @@
             <h:outputText value="#{reservation.duration}" ><f:convertNumber /></h:outputText>
           </p:column>
 
-          <p:column headerText="#{messages.field_label_reservation_hotel}" sortBy="#{reservation.hotel}" filterBy="#{reservation.hotel}">
+          <p:column headerText="#{messages.field_label_reservation_room}" sortBy="#{reservation.room}" filterBy="#{reservation.room}">
             <f:facet name="filter">
-            <p:selectOneMenu  id="hotelFilter"
+            <p:selectOneMenu  id="roomFilter"
                             style="width:145px;"
                             onchange="PF('reservationTable').filter(); return false;">
                 <f:selectItem noSelectionOption="true" itemLabel="" />
-                <f:selectItems itemLabel="#{hotel.name}"
-                            value="#{reservationBean.hotels}" 
-                            var="hotel" 
-                            itemValue="#{hotel}" />
-                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{reservationBean.hotels}" />
+                <f:selectItems itemLabel="#{room.name}"
+                            value="#{reservationBean.rooms}" 
+                            var="room" 
+                            itemValue="#{room}" />
+                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{reservationBean.rooms}" />
             </p:selectOneMenu>
             </f:facet>
-            <h:outputText value="#{reservation.hotel.name}" />
+            <h:outputText value="#{reservation.room.name}" />
           </p:column>
 
           <p:column headerText="#{messages.field_label_reservation_user}" sortBy="#{reservation.user}" filterBy="#{reservation.user}">
@@ -160,25 +160,25 @@
         </h:form>
     </p:dialog>
     
-    <p:dialog dynamic="true" id="createHotelFromEditDialog"
-        header="#{messages.dialog_reservation_create_hotel}" modal="true"
-        widgetVar="createHotelFromEditDialogWidget" maximizable="true">
-        <p:ajax event="close" listener="#{hotelBean.reset}" />
-        <p:outputPanel id="createHotelPanel">
-                <h:form id="createHotelForm">
-                    <ui:include src="/pages/hotel/hotelEditInclude.xhtml">
+    <p:dialog dynamic="true" id="createRoomFromEditDialog"
+        header="#{messages.dialog_reservation_create_room}" modal="true"
+        widgetVar="createRoomFromEditDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{roomBean.reset}" />
+        <p:outputPanel id="createRoomPanel">
+                <h:form id="createRoomForm">
+                    <ui:include src="/pages/room/roomEditInclude.xhtml">
                         <ui:param name="hideReservationSelectInput" value="true" />
                     </ui:include>
                     <div style="text-align: center; margin: 10px">
                         <p:commandButton
-                            action="#{reservationBean.updateHotel(hotelBean.hotel)}"
+                            action="#{reservationBean.updateRoom(roomBean.room)}"
                             value="#{messages.label_save}" icon="ui-icon-disk"
-                            actionListener="#{hotelBean.persist}"
-                            update=":editReservationForm:hotelSelectInput :createHotelPanel :growlForm:growl"
-                            oncomplete="if(!args.validationFailed) PF('createHotelFromEditDialogWidget').hide()" />
+                            actionListener="#{roomBean.persist}"
+                            update=":editReservationForm:roomSelectInput :createRoomPanel :growlForm:growl"
+                            oncomplete="if(!args.validationFailed) PF('createRoomFromEditDialogWidget').hide()" />
                         <p:commandButton value="#{messages.label_close}"
                             icon="ui-icon-close"
-                            onclick="PF('createHotelFromEditDialogWidget').hide()"
+                            onclick="PF('createRoomFromEditDialogWidget').hide()"
                             type="button" />
                     </div>
                 </h:form>

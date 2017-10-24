@@ -116,17 +116,17 @@ public class UserService extends BaseService<UserEntity> implements Serializable
         /* This is called before a User is deleted. Place here all the
            steps to cut dependencies to other entities */
         
-        this.cutAllNewField3HotelsAssignments(user);
+        this.cutAllManagerEstablishmentsAssignments(user);
         
         this.cutAllUserReservationsAssignments(user);
         
     }
     
-    // Remove all assignments from all hotel a user. Called before delete a user.
+    // Remove all assignments from all establishment a user. Called before delete a user.
     @Transactional
-    private void cutAllNewField3HotelsAssignments(UserEntity user) {
+    private void cutAllManagerEstablishmentsAssignments(UserEntity user) {
         entityManager
-                .createQuery("UPDATE Hotel c SET c.newField3 = NULL WHERE c.newField3 = :p")
+                .createQuery("UPDATE Establishment c SET c.manager = NULL WHERE c.manager = :p")
                 .setParameter("p", user).executeUpdate();
     }
     

@@ -3,12 +3,13 @@ package com.ecom.service;
 import com.ecom.domain.EstablishmentEntity;
 import com.ecom.domain.security.UserEntity;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.inject.Named;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @Named
 public class EstablishmentService extends BaseService<EstablishmentEntity> implements Serializable {
@@ -21,7 +22,6 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
     
     @Transactional
     public List<EstablishmentEntity> findAllEstablishmentEntities() {
-        
         return entityManager.createQuery("SELECT o FROM Establishment o LEFT JOIN FETCH o.image", EstablishmentEntity.class).getResultList();
     }
     
@@ -57,6 +57,26 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
     @Transactional
     public List<EstablishmentEntity> findEstablishmentsByManager(UserEntity user) {
         return entityManager.createQuery("SELECT o FROM Establishment o WHERE o.manager = :user", EstablishmentEntity.class).setParameter("user", user).getResultList();
+    }
+
+    @Transactional
+    public List<EstablishmentEntity> findFreeEstablishmentsInCity(Date from, Date to, String place) {
+        place = "%"+place+"%";
+        return entityManager.createQuery(
+                "SELECT o " +
+                    "FROM Establishment o " +
+                    "WHERE o.place LIKE :place " +
+                    "AND o.id NOT IN (" +
+                        "SELECT r.room.establishment.id " +
+                        "FROM Reservation r " +
+                        "WHERE (r.startdate > :startDate AND r.startdate < :endDate) " +
+                        "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
+                        "OR (r.startdate < :startDate AND r.enddate > :endDate)" +
+                    ")", EstablishmentEntity.class)
+                .setParameter("place", place)
+                .setParameter("startDate", from, TemporalType.DATE)
+                .setParameter("endDate", to, TemporalType.DATE)
+                .getResultList();
     }
 
     @Transactional

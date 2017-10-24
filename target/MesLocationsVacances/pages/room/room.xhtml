@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+
+    <h:form prependId="false" id="roomDataForm" onkeypress="if (event.keyCode == 13) {return false; }">
+
+        <p:dataTable id="roomTable" value="#{roomBean.roomList}" var="room" resizableColumns="true" paginator="true"
+                paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
+                paginatorPosition="bottom" widgetVar="roomTable" emptyMessage="#{messages.label_no_records_found}"
+                reflow="true">
+        
+          <f:facet name="header" >
+
+              <p:commandButton value="#{messages.create_new_room}" icon="ui-icon-plusthick" action="#{roomBean.prepareNewRoom()}"
+                      resetValues="true" update=":editRoomDialog" oncomplete="PF('editRoomDialogWidget').show()"
+                      style="float:left" />
+              
+              <p:commandButton id="toggler" type="button" value="#{messages.table_select_columns}" icon="ui-icon-calculator" />
+              <p:columnToggler datasource="roomTable" trigger="toggler" />
+          </f:facet>
+          
+          <p:column headerText="#{messages.field_label_room_price}" sortBy="#{room.price}" filterBy="#{room.price}">
+            <f:facet name="filter">
+                <p:inputText id="priceFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updatePriceFilter(); return false; }" >
+                    <f:convertNumber />
+                    <p:remoteCommand name="updatePriceFilter" update="roomTable:priceFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{room.price}"><f:convertNumber /></h:outputText>
+          </p:column>
+
+          <p:column headerText="#{messages.field_label_room_hotel}" sortBy="#{room.hotel}" filterBy="#{room.hotel}">
+            <f:facet name="filter">
+            <p:selectOneMenu  id="hotelFilter"
+                            style="width:145px;"
+                            onchange="PF('roomTable').filter(); return false;">
+                <f:selectItem noSelectionOption="true" itemLabel="" />
+                <f:selectItems itemLabel="#{hotel.name}"
+                            value="#{roomBean.hotels}" 
+                            var="hotel" 
+                            itemValue="#{hotel}" />
+                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.hotels}" />
+            </p:selectOneMenu>
+            </f:facet>
+            <h:outputText value="#{room.hotel.name}" />
+          </p:column>
+
+          <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115" exportable="false">
+            
+            <p:commandButton icon="ui-icon-zoomin" update=":viewRoomDialog" oncomplete="PF('viewRoomDialogWidget').show()" title="#{messages.label_view}">
+              <f:setPropertyActionListener value="#{room}" target="#{roomBean.room}" />
+            </p:commandButton>
+
+            <p:commandButton icon="ui-icon-pencil" update=":editRoomDialog"
+                resetValues="true" 
+                action="#{roomBean.onDialogOpen(room)}"
+                oncomplete="PF('editRoomDialogWidget').show()"
+                title="#{messages.label_edit}" >
+            </p:commandButton>
+
+            <p:commandButton icon="ui-icon-close" 
+                oncomplete="PF('deleteRoomDialogWidget').show()"
+                title="#{messages.label_delete}" >
+                <f:setPropertyActionListener value="#{room}"
+                    target="#{roomBean.room}" />
+            </p:commandButton>
+    
+          </p:column>
+          
+        </p:dataTable>
+        
+    </h:form>
+
+    <p:confirmDialog id="deleteRoomDialog" widgetVar="deleteRoomDialogWidget"
+        header="#{messages.label_confirm_deletion}"
+        severity="alarm">
+        <f:facet name="message"><h:outputText value="#{messages.label_delete_record}" escape="false"/></f:facet>
+        <p:outputPanel>
+          <h:form>
+            <div style="text-align: center; margin:10px">
+              <p:commandButton value="#{messages.label_yes}" action="#{roomBean.delete}" update=":roomDataForm :growlForm:growl" oncomplete="PF('deleteRoomDialogWidget').hide()" />
+              <p:commandButton value="#{messages.label_no}" onclick="PF('deleteRoomDialogWidget').hide()" type="button" />
+            </div>
+          </h:form>
+        </p:outputPanel>
+    </p:confirmDialog>
+    
+    <p:dialog dynamic="true" id="editRoomDialog" header="#{messages.label_room_caption}"
+            modal="true" widgetVar="editRoomDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{roomBean.reset}"/>
+        <h:form id="editRoomForm" >
+            <p:outputPanel id="roomEditPanel">
+                <ui:include src="/pages/room/roomEditInclude.xhtml"/>
+                <div style="text-align: center; margin:10px">
+                    <p:commandButton value="#{messages.label_save}"
+                            icon="ui-icon-disk" action="#{roomBean.persist}"
+                            update=":editRoomForm:roomEditPanel :roomDataForm :growlForm:growl"
+                            oncomplete="if(!args.validationFailed) PF('editRoomDialogWidget').hide()" />
+                    <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('editRoomDialogWidget').hide()" type="button" />
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog dynamic="true" id="viewRoomDialog" header="#{messages.label_room_caption}" modal="true" widgetVar="viewRoomDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{roomBean.reset}" />
+        <h:form id="viewRoomForm">
+          <ui:include src="/pages/room/roomViewInclude.xhtml"/>
+          <div style="text-align: center; margin:10px">
+              <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('viewRoomDialogWidget').hide()" type="button" />
+          </div>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog dynamic="true" id="createHotelFromEditDialog"
+        header="#{messages.dialog_room_create_hotel}" modal="true"
+        widgetVar="createHotelFromEditDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{hotelBean.reset}" />
+        <p:outputPanel id="createHotelPanel">
+                <h:form id="createHotelForm">
+                    <ui:include src="/pages/hotel/hotelEditInclude.xhtml">
+                        <ui:param name="hideRoomSelectInput" value="true" />
+                    </ui:include>
+                    <div style="text-align: center; margin: 10px">
+                        <p:commandButton
+                            action="#{roomBean.updateHotel(hotelBean.hotel)}"
+                            value="#{messages.label_save}" icon="ui-icon-disk"
+                            actionListener="#{hotelBean.persist}"
+                            update=":editRoomForm:hotelSelectInput :createHotelPanel :growlForm:growl"
+                            oncomplete="if(!args.validationFailed) PF('createHotelFromEditDialogWidget').hide()" />
+                        <p:commandButton value="#{messages.label_close}"
+                            icon="ui-icon-close"
+                            onclick="PF('createHotelFromEditDialogWidget').hide()"
+                            type="button" />
+                    </div>
+                </h:form>
+            </p:outputPanel>
+    </p:dialog>
+    
+  </ui:define>
+</ui:composition>
+</html>

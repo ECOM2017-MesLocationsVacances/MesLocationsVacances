@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+
+        <p:outputPanel styleClass="ui-fluid">
+
+            <p:panelGrid columns="3" columnClasses="ui-grid-col-4,ui-grid-col-6,ui-grid-col-2" layout="grid" style="max-width:400px">
+            
+                <h:outputLabel value="#{messages.field_label_room_price}:" for="priceEditInput" />
+                <p:inputText value="#{roomBean.room.price}" id="priceEditInput" label="#{messages.field_label_room_price}" >
+                    <f:convertNumber />
+                </p:inputText>
+                <p:message for="priceEditInput" display="icon" />
+
+                <h:outputLabel value="#{messages.field_label_room_hotel}:" for="hotelSelectInput" rendered="#{not hideHotelSelectInput}"/>
+                <h:panelGroup rendered="#{not hideHotelSelectInput}">
+                    <p:selectOneMenu value="#{roomBean.room.hotel}"
+                                    id="hotelSelectInput">
+                        <f:selectItem noSelectionOption="true" itemLabel="" />
+                        <f:selectItems value="#{roomBean.hotels}" 
+                                    var="hotel" 
+                                    itemLabel="#{hotel.name}"
+                                    itemValue="#{hotel}" />
+                        <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.hotels}" />
+                    </p:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not hideHotelSelectInput}">
+                
+                    <p:commandButton icon="ui-icon-plusthick" title="#{messages.label_create}"
+                              action="#{hotelBean.prepareNewHotel()}"
+                              update=":createHotelFromEditDialog"
+                              resetValues="true"
+                              oncomplete="PF('createHotelFromEditDialogWidget').show()"
+                              rendered="#{applicationBean.componentExists('createHotelFromEditDialog')}"
+                              style="vertical-align:top;" partialSubmit="true" process="@this">
+                    </p:commandButton>
+                    
+                    <p:message for="hotelSelectInput" display="icon" rendered="#{not hideHotelSelectInput}"/>
+                </h:panelGroup>
+                
+            </p:panelGrid>
+
+        </p:outputPanel>
+</html>

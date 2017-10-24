@@ -29,7 +29,7 @@ public class SecurityWrapper implements Serializable {
     
     // Because Shiro does not support public permissions, we need to workaround them:
     private static final Set<String> publicPermissions = 
-            new HashSet<>(Arrays.asList(new String[]{"room:read" ,"room:read" ,"room:read" ,"hotel:create" ,"hotel:read" ,"hotel:update" ,"hotel:delete" ,"hotel:create" ,"hotel:read" ,"hotel:update" ,"hotel:delete" ,"hotel:create" ,"hotel:read" ,"hotel:update" ,"hotel:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete"}));
+            new HashSet<>(Arrays.asList(new String[]{"room:read" ,"room:read" ,"room:read" ,"room:read" ,"establishment:create" ,"establishment:read" ,"establishment:update" ,"establishment:delete" ,"establishment:create" ,"establishment:read" ,"establishment:update" ,"establishment:delete" ,"establishment:create" ,"establishment:read" ,"establishment:update" ,"establishment:delete" ,"establishment:create" ,"establishment:read" ,"establishment:update" ,"establishment:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete" ,"reservation:create" ,"reservation:read" ,"reservation:update" ,"reservation:delete"}));
     
     public static boolean login(String username, String password, boolean rememberMe) {
         try {

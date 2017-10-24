@@ -64,7 +64,8 @@
     {
       "name": "Room",
       "id": 1,
-      "lookupField": 0,
+      "lookupField": "4",
+      "imageUploadEnabled": true,
       "authorization": [
         {
           "roleId": 1,
@@ -95,6 +96,16 @@
           "deletePerm": 1,
           "changeOwnerPerm": 0,
           "ownerRoleEnabled": false
+        },
+        {
+          "roleId": 6,
+          "roleName": "Manager",
+          "createPerm": 0,
+          "readPerm": 0,
+          "updatePerm": 0,
+          "deletePerm": 0,
+          "changeOwnerPerm": 0,
+          "ownerRoleEnabled": false
         }
       ],
       "fields": [
@@ -118,19 +129,29 @@
         },
         {
           "id": 2,
-          "name": "hotel",
+          "name": "establishment",
           "type": "Relation",
           "editable": true,
           "showInTable": true,
           "referenceType": "n:1",
-          "referenceEntity": "Hotel"
+          "referenceEntity": "Establishment"
+        },
+        {
+          "id": 4,
+          "name": "name",
+          "type": "String",
+          "editable": true,
+          "showInTable": true,
+          "stringLength": 50,
+          "required": true
         }
       ]
     },
     {
-      "name": "Hotel",
+      "name": "Establishment",
       "id": 2,
       "lookupField": "1",
+      "imageUploadEnabled": true,
       "authorization": [
         {
           "roleId": 1,
@@ -159,6 +180,16 @@
           "readPerm": 1,
           "updatePerm": 1,
           "deletePerm": 1,
+          "changeOwnerPerm": 0,
+          "ownerRoleEnabled": false
+        },
+        {
+          "roleId": 6,
+          "roleName": "Manager",
+          "createPerm": 0,
+          "readPerm": 0,
+          "updatePerm": 0,
+          "deletePerm": 0,
           "changeOwnerPerm": 0,
           "ownerRoleEnabled": false
         }
@@ -192,7 +223,7 @@
         },
         {
           "id": 3,
-          "name": "New Field 3",
+          "name": "manager",
           "type": "Relation",
           "editable": true,
           "showInTable": true,
@@ -235,6 +266,16 @@
           "deletePerm": 1,
           "changeOwnerPerm": 0,
           "ownerRoleEnabled": false
+        },
+        {
+          "roleId": 6,
+          "roleName": "Manager",
+          "createPerm": 0,
+          "readPerm": 0,
+          "updatePerm": 0,
+          "deletePerm": 0,
+          "changeOwnerPerm": 0,
+          "ownerRoleEnabled": false
         }
       ],
       "fields": [
@@ -273,12 +314,12 @@
         },
         {
           "id": 4,
-          "name": "hotel",
+          "name": "room",
           "type": "Relation",
           "editable": true,
           "showInTable": true,
           "referenceType": "n:1",
-          "referenceEntity": "Hotel"
+          "referenceEntity": "Room"
         },
         {
           "id": 5,
@@ -320,8 +361,13 @@
         "id": "registered001",
         "name": "Registered",
         "canBeDeleted": false
+      },
+      {
+        "id": 6,
+        "name": "Manager",
+        "canBeDeleted": true
       }
     ]
   },
-  "guid": "3c53d98f-eb81-45ca-dd53-edc6a434250a"
+  "guid": "144d6710-8d95-4ff2-5658-85b33cf7ff98"
 }

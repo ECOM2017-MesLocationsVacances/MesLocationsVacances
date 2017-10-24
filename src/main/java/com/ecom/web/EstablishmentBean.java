@@ -1,11 +1,11 @@
 package com.ecom.web;
 
 import com.ecom.domain.EstablishmentEntity;
-import com.ecom.domain.RoomEntity;
-import com.ecom.domain.RoomImage;
+import com.ecom.domain.EstablishmentImage;
+import com.ecom.domain.security.UserEntity;
 import com.ecom.service.EstablishmentService;
-import com.ecom.service.RoomService;
 import com.ecom.service.security.SecurityWrapper;
+import com.ecom.service.security.UserService;
 import com.ecom.web.util.MessageFactory;
 
 import java.awt.image.BufferedImage;
@@ -34,34 +34,34 @@ import org.imgscalr.Scalr.Method;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-@Named("roomBean")
+@Named("establishmentBean")
 @ViewScoped
-public class RoomBean implements Serializable {
+public class EstablishmentBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(RoomBean.class.getName());
+    private static final Logger logger = Logger.getLogger(EstablishmentBean.class.getName());
     
-    private List<RoomEntity> roomList;
+    private List<EstablishmentEntity> establishmentList;
 
-    private RoomEntity room;
+    private EstablishmentEntity establishment;
     
     @Inject
-    private RoomService roomService;
+    private EstablishmentService establishmentService;
     
     UploadedFile uploadedImage;
     byte[] uploadedImageContents;
     
     @Inject
-    private EstablishmentService establishmentService;
+    private UserService userService;
     
-    private List<EstablishmentEntity> allEstablishmentsList;
+    private List<UserEntity> allManagersList;
     
-    public void prepareNewRoom() {
+    public void prepareNewEstablishment() {
         reset();
-        this.room = new RoomEntity();
+        this.establishment = new EstablishmentEntity();
         // set any default values now, if you need
-        // Example: this.room.setAnything("test");
+        // Example: this.establishment.setAnything("test");
     }
 
     public String persist() {
@@ -92,9 +92,9 @@ public class RoomBean implements Serializable {
                     
                     logger.log(Level.INFO, "Resized uploaded image from {0} to {1}", new Object[]{uploadedImageContents.length, baos.toByteArray().length});
             
-                    RoomImage roomImage = new RoomImage();
-                    roomImage.setContent(baos.toByteArray());
-                    room.setImage(roomImage);
+                    EstablishmentImage establishmentImage = new EstablishmentImage();
+                    establishmentImage.setContent(baos.toByteArray());
+                    establishment.setImage(establishmentImage);
                 } catch (Exception e) {
                     FacesMessage facesMessage = MessageFactory.getMessage(
                             "message_upload_exception");
@@ -104,11 +104,11 @@ public class RoomBean implements Serializable {
                 }
             }
             
-            if (room.getId() != null) {
-                room = roomService.update(room);
+            if (establishment.getId() != null) {
+                establishment = establishmentService.update(establishment);
                 message = "message_successfully_updated";
             } else {
-                room = roomService.save(room);
+                establishment = establishmentService.save(establishment);
                 message = "message_successfully_created";
             }
         } catch (OptimisticLockException e) {
@@ -123,7 +123,7 @@ public class RoomBean implements Serializable {
             FacesContext.getCurrentInstance().validationFailed();
         }
         
-        roomList = null;
+        establishmentList = null;
 
         FacesMessage facesMessage = MessageFactory.getMessage(message);
         FacesContext.getCurrentInstance().addMessage(null, facesMessage);
@@ -136,7 +136,7 @@ public class RoomBean implements Serializable {
         String message;
         
         try {
-            roomService.delete(room);
+            establishmentService.delete(establishment);
             message = "message_successfully_deleted";
             reset();
         } catch (Exception e) {
@@ -150,35 +150,35 @@ public class RoomBean implements Serializable {
         return null;
     }
     
-    public void onDialogOpen(RoomEntity room) {
+    public void onDialogOpen(EstablishmentEntity establishment) {
         reset();
-        this.room = room;
+        this.establishment = establishment;
     }
     
     public void reset() {
-        room = null;
-        roomList = null;
+        establishment = null;
+        establishmentList = null;
         
-        allEstablishmentsList = null;
+        allManagersList = null;
         
         uploadedImage = null;
         uploadedImageContents = null;
         
     }
 
-    // Get a List of all establishment
-    public List<EstablishmentEntity> getEstablishments() {
-        if (this.allEstablishmentsList == null) {
-            this.allEstablishmentsList = establishmentService.findAllEstablishmentEntities();
+    // Get a List of all manager
+    public List<UserEntity> getManagers() {
+        if (this.allManagersList == null) {
+            this.allManagersList = userService.findAllUserEntities();
         }
-        return this.allEstablishmentsList;
+        return this.allManagersList;
     }
     
-    // Update establishment of the current room
-    public void updateEstablishment(EstablishmentEntity establishment) {
-        this.room.setEstablishment(establishment);
-        // Maybe we just created and assigned a new establishment. So reset the allEstablishmentList.
-        allEstablishmentsList = null;
+    // Update manager of the current establishment
+    public void updateManager(UserEntity user) {
+        this.establishment.setManager(user);
+        // Maybe we just created and assigned a new user. So reset the allManagerList.
+        allManagersList = null;
     }
     
     public void handleImageUpload(FileUploadEvent event) {
@@ -202,40 +202,40 @@ public class RoomBean implements Serializable {
     public byte[] getUploadedImageContents() {
         if (uploadedImageContents != null) {
             return uploadedImageContents;
-        } else if (room != null && room.getImage() != null) {
-            room = roomService.lazilyLoadImageToRoom(room);
-            return room.getImage().getContent();
+        } else if (establishment != null && establishment.getImage() != null) {
+            establishment = establishmentService.lazilyLoadImageToEstablishment(establishment);
+            return establishment.getImage().getContent();
         }
         return null;
     }
     
-    public RoomEntity getRoom() {
-        if (this.room == null) {
-            prepareNewRoom();
+    public EstablishmentEntity getEstablishment() {
+        if (this.establishment == null) {
+            prepareNewEstablishment();
         }
-        return this.room;
+        return this.establishment;
     }
     
-    public void setRoom(RoomEntity room) {
-        this.room = room;
+    public void setEstablishment(EstablishmentEntity establishment) {
+        this.establishment = establishment;
     }
     
-    public List<RoomEntity> getRoomList() {
-        if (roomList == null) {
-            roomList = roomService.findAllRoomEntities();
+    public List<EstablishmentEntity> getEstablishmentList() {
+        if (establishmentList == null) {
+            establishmentList = establishmentService.findAllEstablishmentEntities();
         }
-        return roomList;
+        return establishmentList;
     }
 
-    public void setRoomList(List<RoomEntity> roomList) {
-        this.roomList = roomList;
+    public void setEstablishmentList(List<EstablishmentEntity> establishmentList) {
+        this.establishmentList = establishmentList;
     }
     
     public boolean isPermitted(String permission) {
         return SecurityWrapper.isPermitted(permission);
     }
 
-    public boolean isPermitted(RoomEntity room, String permission) {
+    public boolean isPermitted(EstablishmentEntity establishment, String permission) {
         
         return SecurityWrapper.isPermitted(permission);
         

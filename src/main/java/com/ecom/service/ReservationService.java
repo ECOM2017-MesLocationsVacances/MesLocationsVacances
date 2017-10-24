@@ -1,7 +1,7 @@
 package com.ecom.service;
 
-import com.ecom.domain.HotelEntity;
 import com.ecom.domain.ReservationEntity;
+import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
 
 import java.io.Serializable;
@@ -40,13 +40,13 @@ public class ReservationService extends BaseService<ReservationEntity> implement
     }
 
     @Transactional
-    public List<ReservationEntity> findAvailableReservations(HotelEntity hotel) {
-        return entityManager.createQuery("SELECT o FROM Reservation o WHERE o.hotel IS NULL", ReservationEntity.class).getResultList();
+    public List<ReservationEntity> findAvailableReservations(RoomEntity room) {
+        return entityManager.createQuery("SELECT o FROM Reservation o WHERE o.room IS NULL", ReservationEntity.class).getResultList();
     }
 
     @Transactional
-    public List<ReservationEntity> findReservationsByHotel(HotelEntity hotel) {
-        return entityManager.createQuery("SELECT o FROM Reservation o WHERE o.hotel = :hotel", ReservationEntity.class).setParameter("hotel", hotel).getResultList();
+    public List<ReservationEntity> findReservationsByRoom(RoomEntity room) {
+        return entityManager.createQuery("SELECT o FROM Reservation o WHERE o.room = :room", ReservationEntity.class).setParameter("room", room).getResultList();
     }
 
     @Transactional

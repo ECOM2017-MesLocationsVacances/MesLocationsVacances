@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+
+    <h:form prependId="false" id="establishmentDataForm" onkeypress="if (event.keyCode == 13) {return false; }">
+
+        <p:dataTable id="establishmentTable" value="#{establishmentBean.establishmentList}" var="establishment" resizableColumns="true" paginator="true"
+                paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
+                paginatorPosition="bottom" widgetVar="establishmentTable" emptyMessage="#{messages.label_no_records_found}"
+                reflow="true">
+        
+          <f:facet name="header" >
+
+              <p:commandButton value="#{messages.create_new_establishment}" icon="ui-icon-plusthick" action="#{establishmentBean.prepareNewEstablishment()}"
+                      resetValues="true" update=":editEstablishmentDialog" oncomplete="PF('editEstablishmentDialogWidget').show()"
+                      style="float:left" />
+              
+              <p:commandButton id="toggler" type="button" value="#{messages.table_select_columns}" icon="ui-icon-calculator" />
+              <p:columnToggler datasource="establishmentTable" trigger="toggler" />
+          </f:facet>
+          
+          <p:column headerText="#{messages.label_image}">
+              <o:graphicImage value="#{establishment.image.content}" dataURI="true"
+                  rendered="#{not empty establishment.image.content}" width="50px"/>
+          </p:column>
+          
+          <p:column  headerText="#{messages.field_label_establishment_name}" sortBy="#{establishment.name}" filterBy="#{establishment.name}">
+            <f:facet name="filter">
+                <p:inputText id="nameFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('establishmentTable').filter(); updateNameFilter(); return false; }" >
+                    <p:remoteCommand name="updateNameFilter" update="establishmentTable:nameFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{establishment.name}" />
+          </p:column>
+
+          <p:column  headerText="#{messages.field_label_establishment_place}" sortBy="#{establishment.place}" filterBy="#{establishment.place}">
+            <f:facet name="filter">
+                <p:inputText id="placeFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('establishmentTable').filter(); updatePlaceFilter(); return false; }" >
+                    <p:remoteCommand name="updatePlaceFilter" update="establishmentTable:placeFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{establishment.place}" />
+          </p:column>
+
+          <p:column headerText="#{messages.field_label_establishment_manager}" sortBy="#{establishment.manager}" filterBy="#{establishment.manager}">
+            <f:facet name="filter">
+            <p:selectOneMenu  id="managerFilter"
+                            style="width:145px;"
+                            onchange="PF('establishmentTable').filter(); return false;">
+                <f:selectItem noSelectionOption="true" itemLabel="" />
+                <f:selectItems itemLabel="#{user.username}"
+                            value="#{establishmentBean.managers}" 
+                            var="user" 
+                            itemValue="#{user}" />
+                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{establishmentBean.managers}" />
+            </p:selectOneMenu>
+            </f:facet>
+            <h:outputText value="#{establishment.manager.username}" />
+          </p:column>
+
+          <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115" exportable="false">
+            
+            <p:commandButton icon="ui-icon-zoomin" update=":viewEstablishmentDialog" oncomplete="PF('viewEstablishmentDialogWidget').show()" title="#{messages.label_view}">
+              <f:setPropertyActionListener value="#{establishment}" target="#{establishmentBean.establishment}" />
+            </p:commandButton>
+
+            <p:commandButton icon="ui-icon-pencil" update=":editEstablishmentDialog"
+                resetValues="true" 
+                action="#{establishmentBean.onDialogOpen(establishment)}"
+                oncomplete="PF('editEstablishmentDialogWidget').show()"
+                title="#{messages.label_edit}" >
+            </p:commandButton>
+
+            <p:commandButton icon="ui-icon-close" 
+                oncomplete="PF('deleteEstablishmentDialogWidget').show()"
+                title="#{messages.label_delete}" >
+                <f:setPropertyActionListener value="#{establishment}"
+                    target="#{establishmentBean.establishment}" />
+            </p:commandButton>
+    
+          </p:column>
+          
+        </p:dataTable>
+        
+    </h:form>
+
+    <p:confirmDialog id="deleteEstablishmentDialog" widgetVar="deleteEstablishmentDialogWidget"
+        header="#{messages.label_confirm_deletion}"
+        severity="alarm">
+        <f:facet name="message"><h:outputText value="#{messages.label_delete_record}" escape="false"/></f:facet>
+        <p:outputPanel>
+          <h:form>
+            <div style="text-align: center; margin:10px">
+              <p:commandButton value="#{messages.label_yes}" action="#{establishmentBean.delete}" update=":establishmentDataForm :growlForm:growl" oncomplete="PF('deleteEstablishmentDialogWidget').hide()" />
+              <p:commandButton value="#{messages.label_no}" onclick="PF('deleteEstablishmentDialogWidget').hide()" type="button" />
+            </div>
+          </h:form>
+        </p:outputPanel>
+    </p:confirmDialog>
+    
+    <p:dialog dynamic="true" id="editEstablishmentDialog" header="#{messages.label_establishment_caption}"
+            modal="true" widgetVar="editEstablishmentDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{establishmentBean.reset}"/>
+        <h:form id="editEstablishmentForm" >
+            <p:outputPanel id="establishmentEditPanel">
+                <ui:include src="/pages/establishment/establishmentEditInclude.xhtml"/>
+                <div style="text-align: center; margin:10px">
+                    <p:commandButton value="#{messages.label_save}"
+                            icon="ui-icon-disk" action="#{establishmentBean.persist}"
+                            update=":editEstablishmentForm:establishmentEditPanel :establishmentDataForm :growlForm:growl"
+                            oncomplete="if(!args.validationFailed) PF('editEstablishmentDialogWidget').hide()" />
+                    <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('editEstablishmentDialogWidget').hide()" type="button" />
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog dynamic="true" id="viewEstablishmentDialog" header="#{messages.label_establishment_caption}" modal="true" widgetVar="viewEstablishmentDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{establishmentBean.reset}" />
+        <h:form id="viewEstablishmentForm">
+          <ui:include src="/pages/establishment/establishmentViewInclude.xhtml"/>
+          <div style="text-align: center; margin:10px">
+              <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('viewEstablishmentDialogWidget').hide()" type="button" />
+          </div>
+        </h:form>
+    </p:dialog>
+    
+  </ui:define>
+</ui:composition>
+</html>

@@ -28,6 +28,11 @@
               <p:columnToggler datasource="roomTable" trigger="toggler" />
           </f:facet>
           
+          <p:column headerText="#{messages.label_image}">
+              <o:graphicImage value="#{room.image.content}" dataURI="true"
+                  rendered="#{not empty room.image.content}" width="50px"/>
+          </p:column>
+          
           <p:column headerText="#{messages.field_label_room_price}" sortBy="#{room.price}" filterBy="#{room.price}">
             <f:facet name="filter">
                 <p:inputText id="priceFilter"
@@ -39,20 +44,30 @@
             <h:outputText value="#{room.price}"><f:convertNumber /></h:outputText>
           </p:column>
 
-          <p:column headerText="#{messages.field_label_room_hotel}" sortBy="#{room.hotel}" filterBy="#{room.hotel}">
+          <p:column headerText="#{messages.field_label_room_establishment}" sortBy="#{room.establishment}" filterBy="#{room.establishment}">
             <f:facet name="filter">
-            <p:selectOneMenu  id="hotelFilter"
+            <p:selectOneMenu  id="establishmentFilter"
                             style="width:145px;"
                             onchange="PF('roomTable').filter(); return false;">
                 <f:selectItem noSelectionOption="true" itemLabel="" />
-                <f:selectItems itemLabel="#{hotel.name}"
-                            value="#{roomBean.hotels}" 
-                            var="hotel" 
-                            itemValue="#{hotel}" />
-                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.hotels}" />
+                <f:selectItems itemLabel="#{establishment.name}"
+                            value="#{roomBean.establishments}" 
+                            var="establishment" 
+                            itemValue="#{establishment}" />
+                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.establishments}" />
             </p:selectOneMenu>
             </f:facet>
-            <h:outputText value="#{room.hotel.name}" />
+            <h:outputText value="#{room.establishment.name}" />
+          </p:column>
+
+          <p:column  headerText="#{messages.field_label_room_name}" sortBy="#{room.name}" filterBy="#{room.name}">
+            <f:facet name="filter">
+                <p:inputText id="nameFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateNameFilter(); return false; }" >
+                    <p:remoteCommand name="updateNameFilter" update="roomTable:nameFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{room.name}" />
           </p:column>
 
           <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115" exportable="false">
@@ -122,25 +137,25 @@
         </h:form>
     </p:dialog>
     
-    <p:dialog dynamic="true" id="createHotelFromEditDialog"
-        header="#{messages.dialog_room_create_hotel}" modal="true"
-        widgetVar="createHotelFromEditDialogWidget" maximizable="true">
-        <p:ajax event="close" listener="#{hotelBean.reset}" />
-        <p:outputPanel id="createHotelPanel">
-                <h:form id="createHotelForm">
-                    <ui:include src="/pages/hotel/hotelEditInclude.xhtml">
+    <p:dialog dynamic="true" id="createEstablishmentFromEditDialog"
+        header="#{messages.dialog_room_create_establishment}" modal="true"
+        widgetVar="createEstablishmentFromEditDialogWidget" maximizable="true">
+        <p:ajax event="close" listener="#{establishmentBean.reset}" />
+        <p:outputPanel id="createEstablishmentPanel">
+                <h:form id="createEstablishmentForm">
+                    <ui:include src="/pages/establishment/establishmentEditInclude.xhtml">
                         <ui:param name="hideRoomSelectInput" value="true" />
                     </ui:include>
                     <div style="text-align: center; margin: 10px">
                         <p:commandButton
-                            action="#{roomBean.updateHotel(hotelBean.hotel)}"
+                            action="#{roomBean.updateEstablishment(establishmentBean.establishment)}"
                             value="#{messages.label_save}" icon="ui-icon-disk"
-                            actionListener="#{hotelBean.persist}"
-                            update=":editRoomForm:hotelSelectInput :createHotelPanel :growlForm:growl"
-                            oncomplete="if(!args.validationFailed) PF('createHotelFromEditDialogWidget').hide()" />
+                            actionListener="#{establishmentBean.persist}"
+                            update=":editRoomForm:establishmentSelectInput :createEstablishmentPanel :growlForm:growl"
+                            oncomplete="if(!args.validationFailed) PF('createEstablishmentFromEditDialogWidget').hide()" />
                         <p:commandButton value="#{messages.label_close}"
                             icon="ui-icon-close"
-                            onclick="PF('createHotelFromEditDialogWidget').hide()"
+                            onclick="PF('createEstablishmentFromEditDialogWidget').hide()"
                             type="button" />
                     </div>
                 </h:form>

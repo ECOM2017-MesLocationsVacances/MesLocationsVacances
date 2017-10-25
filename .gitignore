@@ -24,5 +24,6 @@
 
 # Project folders/files
 target/
+target/**/*
 .vscode/
 .idea/

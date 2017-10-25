@@ -23,5 +23,6 @@
 *.iml
 
 # Project folders/files
+target/
 .vscode/
 .idea/

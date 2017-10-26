@@ -17,7 +17,7 @@ jobs:
             pip install \
               awscli==1.11.171
       - run:
-          name: Set DB variables
+          name: Set production variables
           command: |
             xmlfile="/app/src/main/resources/META-INF/persistence.xml"
             xmlcommand="xmlstarlet edit -L -N N='http://xmlns.jcp.org/xml/ns/persistence'"

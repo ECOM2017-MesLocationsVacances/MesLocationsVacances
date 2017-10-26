@@ -24,7 +24,6 @@ jobs:
             $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.url']/@value" -v '$DB_URL' $xmlfile
             $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.user']/@value" -v '$DB_USER' $xmlfile
             $xmlcommand -u "//N:property[@name='javax.persistence.jdbc.password']/@value" -v '$DB_PASSWORD' $xmlfile
-            sed -i "s/user:password/$MONITORING_CREDENTIALS/g" /app/src/main/webapp/WEB-INF/web.xml
       - run:
           name: Build JavaEE application (mvn package)
           command: |

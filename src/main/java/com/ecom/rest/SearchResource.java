@@ -1,9 +1,8 @@
 package com.ecom.rest;
 
-import com.ecom.domain.EstablishmentEntity;
-import com.ecom.domain.ReservationEntity;
+import com.ecom.domain.RoomEntity;
 import com.ecom.service.EstablishmentService;
-import com.ecom.service.ReservationService;
+import com.ecom.service.RoomService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +21,8 @@ public class SearchResource implements Serializable {
 
     @Inject
     private EstablishmentService establishmentService;
+    @Inject
+    private RoomService roomService;
 
 //    @GET
 //    @Produces(MediaType.APPLICATION_JSON)
@@ -31,10 +32,10 @@ public class SearchResource implements Serializable {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<EstablishmentEntity> getAllEstablishmentsInCity(@QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("city") String place) {
+    public List<RoomEntity> getFreeRoomsInCity(@QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("city") String place) {
         if (place == null) place = "";
         if (from == null) from = Long.MAX_VALUE;
-        if (to == null) to = 0L;
-        return establishmentService.findFreeEstablishmentsInCity(new Date(from), new Date(to), place);
+        if (to == null) to = Long.MAX_VALUE;
+        return roomService.findFreeRoomsInCity(new Date(from), new Date(to), place);
     }
 }

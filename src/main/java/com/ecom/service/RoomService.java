@@ -4,10 +4,12 @@ import com.ecom.domain.EstablishmentEntity;
 import com.ecom.domain.RoomEntity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Named;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
 
 @Named
@@ -47,6 +49,26 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
         entityManager
                 .createQuery("UPDATE Reservation c SET c.room = NULL WHERE c.room = :p")
                 .setParameter("p", room).executeUpdate();
+    }
+
+    @Transactional
+    public List<RoomEntity> findFreeRoomsInCity(Date from, Date to, String place) {
+        place = "%"+place+"%";
+        return entityManager.createQuery(
+                "SELECT o " +
+                        "FROM Room o " +
+                        "WHERE o.establishment.place LIKE :place " +
+                        "AND o.id NOT IN (" +
+                        "SELECT r.room.id " +
+                        "FROM Reservation r " +
+                        "WHERE (r.startdate > :startDate AND r.startdate < :endDate) " +
+                        "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
+                        "OR (r.startdate < :startDate AND r.enddate > :endDate)" +
+                        ")", RoomEntity.class)
+                .setParameter("place", place)
+                .setParameter("startDate", from, TemporalType.DATE)
+                .setParameter("endDate", to, TemporalType.DATE)
+                .getResultList();
     }
     
     @Transactional

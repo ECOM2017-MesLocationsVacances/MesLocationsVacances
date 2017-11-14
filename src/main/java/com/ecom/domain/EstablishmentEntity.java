@@ -41,6 +41,10 @@ public class EstablishmentEntity extends BaseEntity implements Serializable {
     @JoinColumn(name = "MANAGER_ID", referencedColumnName = "ID")
     private UserEntity manager;
 
+    @Size(max = 255)
+    @Column(name="\"description\"")
+    private String description;
+
     @XmlTransient
     public EstablishmentImage getImage() {
         return image;
@@ -72,6 +76,14 @@ public class EstablishmentEntity extends BaseEntity implements Serializable {
 
     public void setManager(UserEntity user) {
         this.manager = user;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

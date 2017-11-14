@@ -19,9 +19,13 @@
             </p:panel>
             <p:panelGrid columns="3" columnClasses="ui-grid-col-4,ui-grid-col-6,ui-grid-col-2" layout="grid" style="max-width:400px">
                 <h:outputLabel value="#{messages.field_label_establishment_name}:" for="nameEditInput" />
-                <p:inputText value="#{establishmentBean.establishment.name}" id="nameEditInput" 
+                <p:inputText value="#{establishmentBean.establishment.name}" id="nameEditInput"
                     label="#{messages.field_label_establishment_name}" />
                 <p:message for="nameEditInput" display="icon" />
+                <h:outputLabel value="#{messages.field_label_establishment_description}:" for="descriptionEditInput" />
+                <p:inputText value="#{establishmentBean.establishment.description}" id="descriptionEditInput"
+                             label="#{messages.field_label_establishment_description}" />
+                <p:message for="descriptionEditInput" display="icon" />
                 <h:outputLabel value="#{messages.field_label_establishment_place}:" for="placeEditInput" />
                 <p:inputText value="#{establishmentBean.establishment.place}" id="placeEditInput" 
                     label="#{messages.field_label_establishment_place}" />

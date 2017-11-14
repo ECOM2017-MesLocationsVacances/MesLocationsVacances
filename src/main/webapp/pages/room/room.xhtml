@@ -60,6 +60,16 @@
             <h:outputText value="#{room.establishment.name}" />
           </p:column>
 
+            <p:column  headerText="#{messages.field_label_room_description}" sortBy="#{room.description}" filterBy="#{room.description}">
+                <f:facet name="filter">
+                    <p:inputText id="descriptionFilter"
+                                 onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateDescriptionFilter(); return false; }" >
+                        <p:remoteCommand name="updateDescriptionFilter" update="roomTable:nameFilter" />
+                    </p:inputText>
+                </f:facet>
+                <h:outputText value="#{room.description}" />
+            </p:column>
+
           <p:column  headerText="#{messages.field_label_room_name}" sortBy="#{room.name}" filterBy="#{room.name}">
             <f:facet name="filter">
                 <p:inputText id="nameFilter"

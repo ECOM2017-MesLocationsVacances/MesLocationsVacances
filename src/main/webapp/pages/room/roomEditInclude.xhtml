@@ -46,6 +46,10 @@
                     </p:commandButton>
                     <p:message for="establishmentSelectInput" display="icon" rendered="#{not hideEstablishmentSelectInput}"/>
                 </h:panelGroup>
+                <h:outputLabel value="#{messages.field_label_room_description}:" for="descriptionEditInput" />
+                <p:inputText value="#{roomBean.room.description}" id="descriptionEditInput"
+                             label="#{messages.field_label_room_description}" />
+                <p:message for="descriptionEditInput" display="icon" />
                 <h:outputLabel value="#{messages.field_label_room_name}:" for="nameEditInput" />
                 <p:inputText value="#{roomBean.room.name}" id="nameEditInput" 
                     label="#{messages.field_label_room_name}" />

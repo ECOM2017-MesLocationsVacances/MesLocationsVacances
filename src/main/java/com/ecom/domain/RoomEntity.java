@@ -3,14 +3,7 @@ package com.ecom.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -40,6 +33,10 @@ public class RoomEntity extends BaseEntity implements Serializable {
     @Column(length = 50, name="\"name\"")
     @NotNull
     private String name;
+
+    @Size(max = 255)
+    @Column(name="\"description\"")
+    private String description;
 
     @XmlTransient
     public RoomImage getImage() {
@@ -74,4 +71,11 @@ public class RoomEntity extends BaseEntity implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

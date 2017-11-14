@@ -43,6 +43,16 @@
             <h:outputText value="#{establishment.name}" />
           </p:column>
 
+        <p:column  headerText="#{messages.field_label_establishment_description}" sortBy="#{establishment.description}" filterBy="#{establishment.description}">
+            <f:facet name="filter">
+                <p:inputText id="descriptionFilter"
+                             onkeypress="if (event.keyCode == 13) {PF('establishmentTable').filter(); updateDescriptionFilter(); return false; }" >
+                    <p:remoteCommand name="updateDescriptionFilter" update="establishmentTable:descriptionFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{establishment.description}" />
+        </p:column>
+
           <p:column  headerText="#{messages.field_label_establishment_place}" sortBy="#{establishment.place}" filterBy="#{establishment.place}">
             <f:facet name="filter">
                 <p:inputText id="placeFilter"

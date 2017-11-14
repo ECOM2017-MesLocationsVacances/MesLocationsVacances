@@ -52,11 +52,51 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
-			]
+			],
+            "environment": [
+                {
+                    "name": "WILDFLY_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "WILDFLY_PASS",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_PASS",
+                    "value": "%s"
+                }
+                {
+                    "name": "MYSQL_DATABASE",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_PASSWORD",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_ROOT_PASSWORD",
+                    "value": "%s"
+                }
+            ],
 		}
 	]'
 	
-	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1)
+	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \
+                $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
+                $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
 }
 
 push_ecr_image(){

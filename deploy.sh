@@ -90,7 +90,7 @@ make_task_def(){
                     "name": "MYSQL_ROOT_PASSWORD",
                     "value": "%s"
                 }
-            ],
+            ]
 		}
 	]'
 	

@@ -73,7 +73,7 @@ make_task_def(){
                 {
                     "name": "DB_PASS",
                     "value": "%s"
-                }
+                },
                 {
                     "name": "MYSQL_DATABASE",
                     "value": "%s"

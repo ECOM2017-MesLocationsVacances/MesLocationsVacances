@@ -53,6 +53,13 @@ make_task_def(){
 			        "protocol": "tcp"
 				}
 			],
+            "mountPoints": [
+                {
+                    "sourceVolume": "efs",
+                    "containerPath": "/var/lib/mysql",
+                    "readOnly": false
+                }
+            ],
             "environment": [
                 {
                     "name": "WILDFLY_USER",
@@ -97,6 +104,8 @@ make_task_def(){
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \
                 $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
                 $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
+
+    volumes=$(printf '[{"name": "efs","host": {"sourcePath": "/mnt/efs/mysql"}}]')
 }
 
 push_ecr_image(){
@@ -106,7 +115,7 @@ push_ecr_image(){
 
 register_definition() {
 
-    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
+    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --volumes "$volumes" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"

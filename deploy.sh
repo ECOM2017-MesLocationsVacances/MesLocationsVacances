@@ -102,8 +102,8 @@ make_task_def(){
             "portMappings": [
                 {
                 "hostPort": 3306,
-                "containerPort": 3306
-                "protocol": "tcp",
+                "containerPort": 3306,
+                "protocol": "tcp"
                 }
             ],
             "mountPoints": [

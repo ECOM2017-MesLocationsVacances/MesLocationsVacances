@@ -46,7 +46,7 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 700,
+			"memory": 956,
 			"cpu": 1,
 			"portMappings": [
 				{
@@ -54,6 +54,13 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
+            ],
+            "mountPoints": [
+                {
+                "readOnly": false,
+                "containerPath": "/var/lib/mysql",
+                "sourceVolume": "persistance"
+                }
             ],
             "environment": [
                 {
@@ -93,27 +100,7 @@ make_task_def(){
                     "value": "%s"
                 }
             ]
-		},
-        {
-            "name": "db",
-            "image": "mysql:latest",
-            "memory": 200,
-            "cpu": 1,
-            "portMappings": [
-                {
-                "hostPort": 3306,
-                "containerPort": 3306,
-                "protocol": "tcp"
-                }
-            ],
-            "mountPoints": [
-                {
-                "readOnly": false,
-                "containerPath": "/var/lib/mysql",
-                "sourceVolume": "persistance"
-                }
-            ]
-        }
+		}
 	]'
 	
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \

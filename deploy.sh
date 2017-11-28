@@ -13,8 +13,8 @@ configure_aws_cli(){
 deploy_cluster() {
 
     family="meslocationsvacances-webapp-task"
-    cluster="meslocationsvacances-cluster2"
-    service="meslocationsvacances-service2"
+    cluster="meslocationsvacances-cluster"
+    service="meslocationsvacances-service"
 
     make_task_def
     register_definition

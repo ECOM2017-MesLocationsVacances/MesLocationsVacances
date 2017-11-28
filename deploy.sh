@@ -55,7 +55,7 @@ make_task_def(){
 			],
             "mountPoints": [
                 {
-                    "sourceVolume": "efs",
+                    "sourceVolume": "persistance",
                     "containerPath": "/var/lib/mysql",
                     "readOnly": false
                 }
@@ -105,7 +105,7 @@ make_task_def(){
                 $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
                 $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
 
-    volumes=$(printf '[{"name": "efs","host": {"sourcePath": "/mnt/efs/mysql"}}]')
+    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/mysql"}}]')
 }
 
 push_ecr_image(){

@@ -52,11 +52,60 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
-			]
+			],
+            "mountPoints": [
+                {
+                    "sourceVolume": "persistance",
+                    "containerPath": "/var/lib/mysql",
+                    "readOnly": false
+                }
+            ],
+            "environment": [
+                {
+                    "name": "WILDFLY_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "WILDFLY_PASS",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "DB_PASS",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_DATABASE",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_USER",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_PASSWORD",
+                    "value": "%s"
+                },
+                {
+                    "name": "MYSQL_ROOT_PASSWORD",
+                    "value": "%s"
+                }
+            ]
 		}
 	]'
 	
-	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1)
+	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \
+                $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
+                $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
+
+    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/mysql"}}]')
 }
 
 push_ecr_image(){
@@ -66,7 +115,7 @@ push_ecr_image(){
 
 register_definition() {
 
-    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
+    if revision=$(aws ecs register-task-definition --container-definitions "$task_def" --volumes "$volumes" --family $family | $JQ '.taskDefinition.taskDefinitionArn'); then
         echo "Revision: $revision"
     else
         echo "Failed to register task definition"

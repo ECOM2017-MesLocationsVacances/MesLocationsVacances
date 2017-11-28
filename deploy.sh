@@ -95,7 +95,7 @@ make_task_def(){
             ]
 		},
         {
-            "name": "db"
+            "name": "db",
             "image": "mysql:latest",
             "memory": 200,
             "cpu": 1,
@@ -112,7 +112,7 @@ make_task_def(){
                 "containerPath": "/var/lib/mysql",
                 "sourceVolume": "persistance"
                 }
-            ],
+            ]
         }
 	]'
 	

@@ -13,10 +13,12 @@ configure_aws_cli(){
 deploy_cluster() {
 
     family="meslocationsvacances-webapp-task"
+    cluster="meslocationsvacances-cluster2"
+    service="meslocationsvacances-service2"
 
     make_task_def
     register_definition
-    if [[ $(aws ecs update-service --cluster meslocationsvacances-cluster --service meslocationsvacances-service --task-definition $revision | \
+    if [[ $(aws ecs update-service --cluster $cluster --service $service --task-definition $revision | \
                    $JQ '.service.taskDefinition') != $revision ]]; then
         echo "Error updating service."
         return 1
@@ -24,7 +26,7 @@ deploy_cluster() {
 
     # wait for older revisions to disappear
     for attempt in $(seq 1 30); do
-        if stale=$(aws ecs describe-services --cluster meslocationsvacances-cluster --services meslocationsvacances-service | \
+        if stale=$(aws ecs describe-services --cluster $cluster --services $service | \
                        $JQ ".services[0].deployments | .[] | select(.taskDefinition != \"$revision\") | .taskDefinition"); then
             echo "Waiting for stale deployments:"
             echo "$stale"
@@ -52,13 +54,6 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
-			],
-            "mountPoints": [
-                {
-                    "sourceVolume": "persistance",
-                    "containerPath": "/var/lib/mysql",
-                    "readOnly": false
-                }
             ],
             "environment": [
                 {
@@ -98,14 +93,34 @@ make_task_def(){
                     "value": "%s"
                 }
             ]
-		}
+		},
+        {
+            "name": "db"
+            "image": "mysql:latest",
+            "memory": 200,
+            "cpu": 1,
+            "portMappings": [
+                {
+                "hostPort": 3306,
+                "containerPort": 3306
+                "protocol": "tcp",
+                }
+            ],
+            "mountPoints": [
+                {
+                "readOnly": false,
+                "containerPath": "/var/lib/mysql",
+                "sourceVolume": "persistance"
+                }
+            ],
+        }
 	]'
 	
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \
                 $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
                 $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
 
-    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/mysql"}}]')
+    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/"}}]')
 }
 
 push_ecr_image(){

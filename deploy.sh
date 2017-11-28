@@ -46,7 +46,7 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 956,
+			"memory": 512,
 			"cpu": 1,
 			"portMappings": [
 				{

@@ -46,7 +46,7 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 993,
+			"memory": 990,
 			"cpu": 1,
 			"portMappings": [
 				{
@@ -54,6 +54,13 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
+            ],
+            "mountPoints": [
+                {
+                "readOnly": false,
+                "containerPath": "/var/lib/mysql",
+                "sourceVolume": "persistance"
+                }
             ],
             "environment": [
                 {
@@ -100,7 +107,7 @@ make_task_def(){
                 $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
                 $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
 
-    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/"}}]')
+    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/var/lib/mysql"}}]')
 }
 
 push_ecr_image(){

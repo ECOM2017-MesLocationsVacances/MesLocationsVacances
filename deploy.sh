@@ -46,7 +46,7 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 956,
+			"memory": 993,
 			"cpu": 1,
 			"portMappings": [
 				{
@@ -54,13 +54,6 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
-            ],
-            "mountPoints": [
-                {
-                "readOnly": false,
-                "containerPath": "/var/lib/mysql",
-                "sourceVolume": "persistance"
-                }
             ],
             "environment": [
                 {

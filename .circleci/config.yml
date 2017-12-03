@@ -41,15 +41,15 @@ jobs:
             # docker build --cache-from=app -t app .
             docker build -t app .
             docker tag app $AWS_ACCOUNT_ID.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:$CIRCLE_SHA1
-      # - run:
-      #     name: Save Docker image layer cache
-      #     command: |
-      #       mkdir -p /caches
-      #       docker save -o /caches/app.tar app
-      # - save_cache:
-      #     key: v1-{{ .Branch }}-{{ epoch }}
-      #     paths:
-      #       - /caches/app.tar
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
       - run:
           name: Run tests
           command: |

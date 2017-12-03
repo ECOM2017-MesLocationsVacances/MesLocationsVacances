@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1" xsi:schemaLocation=" http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="mariaDB-eclipselink" transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <properties>		      	      
-      <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
-      <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/mlvdb" />
-      <property name="javax.persistence.jdbc.user" value="admin" />
-      <property name="javax.persistence.jdbc.password" value="admin" />
+  <persistence-unit name="persistenceUnit" transaction-type="JTA">
+    <description>
+            Persistence unit for any generjee generated JavaEE application and which work with MySQL
+        </description>
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mlvdb"/>
+      <property name="javax.persistence.jdbc.user" value="admin"/>
+      <property name="javax.persistence.jdbc.password" value="admin"/>
 
-      <property name="eclipselink.logging.level" value="FINE" /> 
-      <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
-      <property name="eclipselink.ddl-generation.output-mode" value="database" />
-
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
       <property name="hibernate.show_sql" value="true"/>
-    </properties>      
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
   </persistence-unit>
 </persistence>

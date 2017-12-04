@@ -13,8 +13,8 @@ configure_aws_cli(){
 deploy_cluster() {
 
     family="meslocationsvacances-webapp-task"
-    cluster="meslocationsvacances-cluster2"
-    service="meslocationsvacances-service2"
+    cluster="meslocationsvacances-cluster"
+    service="meslocationsvacances-service"
 
     make_task_def
     register_definition
@@ -46,7 +46,7 @@ make_task_def(){
 			"name": "meslocationsvacances-container",
 			"image": "%s.dkr.ecr.eu-west-2.amazonaws.com/meslocationsvacances:%s",
 			"essential": true,
-			"memory": 956,
+			"memory": 990,
 			"cpu": 1,
 			"portMappings": [
 				{
@@ -54,6 +54,13 @@ make_task_def(){
 					"hostPort": 80,
 			        "protocol": "tcp"
 				}
+            ],
+            "mountPoints": [
+                {
+                "readOnly": false,
+                "containerPath": "/var/lib/mysql",
+                "sourceVolume": "persistance"
+                }
             ],
             "environment": [
                 {
@@ -93,34 +100,14 @@ make_task_def(){
                     "value": "%s"
                 }
             ]
-		},
-        {
-            "name": "db"
-            "image": "mysql:latest",
-            "memory": 200,
-            "cpu": 1,
-            "portMappings": [
-                {
-                "hostPort": 3306,
-                "containerPort": 3306
-                "protocol": "tcp",
-                }
-            ],
-            "mountPoints": [
-                {
-                "readOnly": false,
-                "containerPath": "/var/lib/mysql",
-                "sourceVolume": "persistance"
-                }
-            ],
-        }
+		}
 	]'
 	
 	task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $CIRCLE_SHA1 \
                 $WILDFLY_USER $WILDFLY_PASSWORD $DB_NAME $DB_USER $DB_PASSWORD \
                 $DB_NAME $DB_USER $DB_PASSWORD $DB_ROOT_PASSWORD)
 
-    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/home/ec2-user/"}}]')
+    volumes=$(printf '[{"name": "persistance","host": {"sourcePath": "/var/lib/mysql"}}]')
 }
 
 push_ecr_image(){

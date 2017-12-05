@@ -25,6 +25,10 @@ jobs:
           name: Build JavaEE application (mvn package)
           command: |
             mvn package
+      - run:
+          name: Run tests
+          command: |
+            mvn test
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
@@ -49,10 +53,6 @@ jobs:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/app.tar
-      - run:
-          name: Run tests
-          command: |
-            echo "TODO test"
       - deploy:
           name: Deploy application Docker image to AWS
           command: |

@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -12,6 +13,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
 import org.omnifaces.util.Faces;
@@ -31,16 +34,12 @@ public class RegistrationMailSender implements Serializable {
     private static final String REGISTRATION_MESSAGE = "registration message\nLink:";
     private static final String PW_RESET_SUBJECT = "password reset subject";
     private static final String PW_RESET_MESSAGE = "password reset message\nLink:";
-    
+
     public static void sendRegistrationActivation(String to, String activationLink) {
 
-        ServletContext context = Faces.getServletContext();
-        String from = context.getInitParameter("mail.from");
-
         try {
-
-            Message message = new MimeMessage(getSession(context));
-            message.setFrom(new InternetAddress(from));
+            Session session = (Session) new InitialContext().lookup("java:jboss/mail/mailSession");
+            Message message = new MimeMessage(session);
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(to));
             message.setSubject(REGISTRATION_SUBJECT);
@@ -54,6 +53,8 @@ public class RegistrationMailSender implements Serializable {
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
+        } catch (NamingException e) {
+            e.printStackTrace();
         }
     }
     

@@ -33,6 +33,7 @@ public class ReserveResource implements Serializable {
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response reserve(@PathParam("user") String login, @HeaderParam("password") String password, ReservationEntity reservation) {
+        Response response;
         if (SecurityWrapper.login(login, password, false)) {
             String username = SecurityWrapper.getUsername();
             if (username != null) {
@@ -40,13 +41,13 @@ public class ReserveResource implements Serializable {
                 UserEntity user = userService.findUserByUsername(username);
                 reservation.setRoom(room);
                 reservation.setUser(user);
+                reservation.setCreateddate(new Date());
                 reservationService.save(reservation);
-                return Response.ok("Bon voyage!").build();
-            }
-            else
-                return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        else
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password "+password).build();
+                response = Response.ok("Bon voyage!").build();
+            } else
+                response = Response.status(Response.Status.BAD_REQUEST).build();
+        } else
+            response = Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password " + password).build();
+        return response;
     }
 }

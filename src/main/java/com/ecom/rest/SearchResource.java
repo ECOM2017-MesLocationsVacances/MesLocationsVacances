@@ -1,8 +1,7 @@
 package com.ecom.rest;
 
-import com.ecom.domain.RoomEntity;
+import com.ecom.domain.EstablishmentEntity;
 import com.ecom.service.EstablishmentService;
-import com.ecom.service.RoomService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,21 +20,13 @@ public class SearchResource implements Serializable {
 
     @Inject
     private EstablishmentService establishmentService;
-    @Inject
-    private RoomService roomService;
-
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public List<EstablishmentEntity> getAllEstablishments() {
-//        return establishmentService.findAllEstablishmentEntities();
-//    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<RoomEntity> getFreeRoomsInCity(@QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("city") String place) {
+    public List<EstablishmentEntity> getFreeRooms(@QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("place") String place) {
         if (place == null) place = "";
         if (from == null) from = Long.MAX_VALUE;
         if (to == null) to = Long.MAX_VALUE;
-        return roomService.findFreeRoomsInCity(new Date(from), new Date(to), place);
+        return establishmentService.findFreeRoomsInCity(new Date(from), new Date(to), place);
     }
 }

@@ -64,27 +64,6 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
     }
 
     @Transactional
-    public List<EstablishmentEntity> findFreeEstablishmentsInCity(Date from, Date to, String place) {
-        place = "%"+place+"%";
-        return entityManager.createQuery(
-                "SELECT o " +
-                    "FROM Establishment o " +
-                    "WHERE o.place LIKE :place " +
-                    "AND o.id NOT IN (" +
-                        "SELECT r.room.establishment.id " +
-                        "FROM Reservation r " +
-                        "WHERE (r.startdate > :startDate AND r.startdate < :endDate) " +
-                        "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
-                        "OR (r.startdate < :startDate AND r.enddate > :endDate)" +
-                    ")", EstablishmentEntity.class)
-                .setParameter("place", place)
-                .setParameter("startDate", from, TemporalType.DATE)
-                .setParameter("endDate", to, TemporalType.DATE)
-                .getResultList();
-    }
-
-
-    @Transactional
     public List<EstablishmentEntity> findFreeEstablishments(Date from, Date to, String place) {
         place = "%" + place + "%";
         return entityManager.createQuery(
@@ -106,9 +85,9 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
     }
 
     @Transactional
-    public List<EstablishmentEntity> findFreeRoomsInCityForDuration(Date from, Date to, Long time, String place) {
+    public List<EstablishmentEntity> findFreeEstablishmentsForDuration(Date from, Date to, Long duration, String place) {
         place = "%" + place + "%";
-        List<EstablishmentEntity> freeRooms =
+        List<EstablishmentEntity> fullyFree =
                 entityManager.createQuery(
                         "SELECT DISTINCT o.establishment " +
                                 "FROM Room o " +
@@ -127,7 +106,7 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
                         .getResultList();
         List<ReservationEntity> reservationsUnsorted =
                 entityManager.createQuery(
-                        "SELECT r.room.id " +
+                        "SELECT r " +
                                 "FROM Reservation r " +
                                 "WHERE r.room.establishment.place LIKE :place "+
                                 "AND ((r.startdate > :startDate AND r.startdate < :endDate) " +
@@ -144,25 +123,27 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
             if (reservationsByRoom.containsKey(room))
                 reservationsByRoom.get(room).add(reservation);
             else {
-                ArrayList<ReservationEntity> reservations = new ArrayList<>();
-                reservations.add(reservation);
-                reservationsByRoom.put(room, reservations);
+                if (!fullyFree.contains(room.getEstablishment())) {
+                    ArrayList<ReservationEntity> reservations = new ArrayList<>();
+                    reservations.add(reservation);
+                    reservationsByRoom.put(room, reservations);
+                }
             }
         }
-        Object[] freeRoomsPartial = reservationsByRoom.keySet().stream().parallel()
+        Object[] partiallyFree = reservationsByRoom.keySet().stream().parallel()
                 .filter(e -> {
                     ArrayList<ReservationEntity> reservations = reservationsByRoom.get(e);
                     for (int i = 1; i < reservations.size(); i++)
-                        if (reservations.get(i).getStartdate().getTime() - reservations.get(i - 1).getEnddate().getTime() >= time)
+                        if (reservations.get(i).getStartdate().getTime() - reservations.get(i - 1).getEnddate().getTime() >= duration)
                             return true;
                     return false;
                 })
                 .map(RoomEntity::getEstablishment)
                 .distinct()
                 .toArray();
-        for (Object room : freeRoomsPartial)
-            freeRooms.add((EstablishmentEntity) room);
-        return freeRooms;
+        for (Object establishment : partiallyFree)
+            fullyFree.add((EstablishmentEntity) establishment);
+        return fullyFree;
     }
 
 

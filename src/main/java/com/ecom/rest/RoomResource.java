@@ -1,31 +1,35 @@
 package com.ecom.rest;
 
+import com.ecom.domain.EstablishmentEntity;
 import com.ecom.domain.RoomEntity;
+import com.ecom.service.EstablishmentService;
 import com.ecom.service.RoomService;
+import com.ecom.service.security.SecurityWrapper;
+import com.ecom.service.security.UserService;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/rooms")
 @Named
 public class RoomResource implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Inject
     private RoomService roomService;
+
+    @Inject
+    private EstablishmentService establishmentService;
+
+    @Inject
+    private UserService userService;
     
     /**
      * Get the complete list of Room Entries <br/>
@@ -74,11 +78,19 @@ public class RoomResource implements Serializable {
      * @param room
      * @return A RoomEntity (JSON)
      */
+    @Path("{user}")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public RoomEntity addRoom(RoomEntity room) {
-        return roomService.save(room);
+    public Response addRoom(@PathParam("user") String login, @HeaderParam("password") String password, RoomEntity room) {
+        EstablishmentEntity establishment = establishmentService.find(room.getEstablishment().getId());
+        room.setEstablishment(establishment);
+        if (SecurityWrapper.login(login, password, false)
+                && SecurityWrapper.isPermitted("establishment:create")
+                && establishment.getManager().equals(userService.findUserByUsername(login))) {
+            return Response.ok(roomService.save(room), MediaType.APPLICATION_JSON).build();
+        } else
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password").build();
     }
     
     /**
@@ -89,11 +101,18 @@ public class RoomResource implements Serializable {
      * @param room
      * @return A RoomEntity (JSON)
      */
+    @Path("{user}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public RoomEntity updateRoom(RoomEntity room) {
-        return roomService.update(room);
+    public Response updateRoom(@PathParam("user") String login, @HeaderParam("password") String password, RoomEntity room) {
+        EstablishmentEntity establishment = establishmentService.find(room.getEstablishment().getId());
+        if (SecurityWrapper.login(login, password, false)
+                && SecurityWrapper.isPermitted("establishment:create")
+                && establishment.getManager().equals(userService.findUserByUsername(login))) {
+            return Response.ok(roomService.update(room), MediaType.APPLICATION_JSON).build();
+        } else
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password").build();
     }
     
     /**
@@ -102,11 +121,18 @@ public class RoomResource implements Serializable {
      * Example URL: /rooms/3
      * @param id
      */
-    @Path("{id}")
+    @Path("{user}/{id}")
     @DELETE
-    public void deleteRoom(@PathParam("id") Long id) {
+    public Response deleteRoom(@PathParam("user") String login, @HeaderParam("password") String password, @PathParam("id") Long id) {
         RoomEntity room = roomService.find(id);
-        roomService.delete(room);
+        EstablishmentEntity establishment = establishmentService.find(room.getEstablishment().getId());
+        if (SecurityWrapper.login(login, password, false)
+                && SecurityWrapper.isPermitted("establishment:create")
+                && establishment.getManager().equals(userService.findUserByUsername(login))) {
+            roomService.delete(room);
+            return Response.ok().build();
+        } else
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password").build();
     }
     
 }

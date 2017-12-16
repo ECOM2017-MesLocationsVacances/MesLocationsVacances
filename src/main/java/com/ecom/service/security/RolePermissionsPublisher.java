@@ -23,16 +23,18 @@ public class RolePermissionsPublisher {
     public void postConstruct() {
 
         if (rolePermissionService.countAllEntries() == 0) {
-
+//TODO add permissions
             rolePermissionService.save(new RolePermission(UserRole.Administrator, "room:create"));
             
             rolePermissionService.save(new RolePermission(UserRole.Administrator, "room:update"));
             
             rolePermissionService.save(new RolePermission(UserRole.Administrator, "room:delete"));
+
+            rolePermissionService.save(new RolePermission(UserRole.Manager, "room:create"));
             
-            rolePermissionService.save(new RolePermission(UserRole.Registered, "room:update"));
+            rolePermissionService.save(new RolePermission(UserRole.Manager, "room:update"));
             
-            rolePermissionService.save(new RolePermission(UserRole.Registered, "room:delete"));
+            rolePermissionService.save(new RolePermission(UserRole.Manager, "room:delete"));
             
             rolePermissionService.save(new RolePermission(UserRole.Administrator, "user:*"));
             

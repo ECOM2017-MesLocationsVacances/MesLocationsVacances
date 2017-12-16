@@ -85,10 +85,10 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
 
 
     @Transactional
-    public List<EstablishmentEntity> findFreeRoomsInCity(Date from, Date to, String place) {
+    public List<EstablishmentEntity> findFreeEstablishments(Date from, Date to, String place) {
         place = "%" + place + "%";
         return entityManager.createQuery(
-                "SELECT o.establishment " +
+                "SELECT DISTINCT o.establishment " +
                         "FROM Room o " +
                         "WHERE o.establishment.place LIKE :place " +
                         "AND o.id NOT IN (" +
@@ -110,7 +110,7 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
         place = "%" + place + "%";
         List<EstablishmentEntity> freeRooms =
                 entityManager.createQuery(
-                        "SELECT o.establishment " +
+                        "SELECT DISTINCT o.establishment " +
                                 "FROM Room o " +
                                 "WHERE o.establishment.place LIKE :place " +
                                 "AND o.id NOT IN (" +

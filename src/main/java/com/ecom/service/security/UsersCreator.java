@@ -22,9 +22,9 @@ import javax.inject.Inject;
  */
 @Singleton
 @Startup
-public class TestUsersCreator {
+public class UsersCreator {
 
-    private static final Logger logger = Logger.getLogger(TestUsersCreator.class.getName());
+    private static final Logger logger = Logger.getLogger(UsersCreator.class.getName());
     
     @Inject
     private UserService userService;
@@ -56,7 +56,7 @@ public class TestUsersCreator {
             
             logger.log(Level.WARNING, "Creating test user 'manager' with password 'manager'.");
             UserEntity managerUser = new UserEntity();
-            managerUser.setUsername("manager");
+                managerUser.setUsername("manager");
             managerUser.setPassword("manager");
             managerUser.setRoles(Arrays.asList(new UserRole[]{UserRole.Manager}));
             managerUser.setStatus(UserStatus.Active);

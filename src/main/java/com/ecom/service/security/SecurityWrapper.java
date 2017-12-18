@@ -12,9 +12,17 @@ import java.util.logging.Logger;
 import javax.inject.Named;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.crypto.hash.Sha512Hash;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.Factory;
 import org.apache.shiro.util.SimpleByteSource;
 
 /**
@@ -33,7 +41,7 @@ public class SecurityWrapper implements Serializable {
     
     public static boolean login(String username, String password, boolean rememberMe) {
         try {
-            SecurityUtils.getSubject().login(new UsernamePasswordToken(username, password, rememberMe));
+            getSubject().login(new UsernamePasswordToken(username, password, rememberMe));
         } catch (AuthenticationException e) {
             logger.log(Level.WARNING, "AuthenticationException", e);
             return false;
@@ -42,26 +50,26 @@ public class SecurityWrapper implements Serializable {
     }
     
     public static void logout() {
-        SecurityUtils.getSubject().logout();
+        getSubject().logout();
     }
     
     public static String getUsername() {
         
-        if (SecurityUtils.getSubject().getPrincipal() == null) {
+        if (getSubject().getPrincipal() == null) {
             return null;
         }
         
-        return (String) SecurityUtils.getSubject().getPrincipal();
+        return (String) getSubject().getPrincipal();
     }
     
     public static boolean isPermitted(String permission) {
         return publicPermissions.contains(permission)
-                || SecurityUtils.getSubject().isPermitted(permission);
+                || getSubject().isPermitted(permission);
     }
 
     public static boolean hasReadPermissionOnlyOwner(String entity) {
-        return !SecurityUtils.getSubject().isPermitted(entity + ":read")
-                && SecurityUtils.getSubject().isPermitted(entity + ":read:owner");
+        return !getSubject().isPermitted(entity + ":read")
+                && getSubject().isPermitted(entity + ":read:owner");
     }
     
     public static String generateSalt() {
@@ -71,5 +79,18 @@ public class SecurityWrapper implements Serializable {
     public static String hashPassword(String password, String salt) {
         Sha512Hash hash = new Sha512Hash(password, (new SimpleByteSource(salt)).getBytes());
         return hash.toHex();
+    }
+
+    public static Subject getSubject() {
+        Subject subject;
+        try {
+            subject = SecurityUtils.getSubject();
+        } catch (UnavailableSecurityManagerException e) {
+            Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+            SecurityManager securityManager = factory.getInstance();
+            SecurityUtils.setSecurityManager(securityManager);
+            subject = SecurityUtils.getSubject();
+        }
+        return subject;
     }
 }

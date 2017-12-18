@@ -57,7 +57,7 @@ public class UserResource implements Serializable {
         if (userService.findUserByEmail(newUser.getEmail()) != null)
             return Response.status(Response.Status.CONFLICT).entity("Mail address already in use").build();
         newUser.setRoles(Arrays.asList(new UserRole[]{UserRole.Registered}));
-        newUser.setStatus(UserStatus.NotConfirmed);
+        newUser.setStatus(UserStatus.Active);
         String emailConfirmationKey = UUID.randomUUID().toString();
         newUser.setEmailConfirmationKey(emailConfirmationKey);
         //TODO need final URL

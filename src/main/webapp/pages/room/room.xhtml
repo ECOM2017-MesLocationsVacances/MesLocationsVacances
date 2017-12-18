@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -8,170 +9,210 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui">
 <ui:composition template="/templates/layout.xhtml">
-  <ui:define name="content">
+    <ui:define name="content">
 
-    <h:form prependId="false" id="roomDataForm" onkeypress="if (event.keyCode == 13) {return false; }">
+        <h:form prependId="false" id="roomDataForm" onkeypress="if (event.keyCode == 13) {return false; }">
 
-        <p:dataTable id="roomTable" value="#{roomBean.roomList}" var="room" resizableColumns="true" paginator="true"
-                paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
-                paginatorPosition="bottom" widgetVar="roomTable" emptyMessage="#{messages.label_no_records_found}"
-                reflow="true">
-        
-          <f:facet name="header" >
+            <p:dataTable id="roomTable" value="#{roomBean.roomList}" var="room" resizableColumns="true" paginator="true"
+                         paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
+                         paginatorPosition="bottom" widgetVar="roomTable"
+                         emptyMessage="#{messages.label_no_records_found}"
+                         reflow="true">
 
-              <p:commandButton value="#{messages.create_new_room}" icon="ui-icon-plusthick" action="#{roomBean.prepareNewRoom()}"
-                      resetValues="true" update=":editRoomDialog" oncomplete="PF('editRoomDialogWidget').show()"
-                      style="float:left" />
-              
-              <p:commandButton id="toggler" type="button" value="#{messages.table_select_columns}" icon="ui-icon-calculator" />
-              <p:columnToggler datasource="roomTable" trigger="toggler" />
-          </f:facet>
-          
-          <p:column headerText="#{messages.label_image}">
-              <o:graphicImage value="#{room.image.content}" dataURI="true"
-                  rendered="#{not empty room.image.content}" width="50px"/>
-          </p:column>
-          
-          <p:column headerText="#{messages.field_label_room_price}" sortBy="#{room.price}" filterBy="#{room.price}">
-            <f:facet name="filter">
-                <p:inputText id="priceFilter"
-                        onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updatePriceFilter(); return false; }" >
-                    <f:convertNumber />
-                    <p:remoteCommand name="updatePriceFilter" update="roomTable:priceFilter" />
-                </p:inputText>
-            </f:facet>
-            <h:outputText value="#{room.price}"><f:convertNumber /></h:outputText>
-          </p:column>
+                <f:facet name="header">
 
-          <p:column headerText="#{messages.field_label_room_establishment}" sortBy="#{room.establishment}" filterBy="#{room.establishment}">
-            <f:facet name="filter">
-            <p:selectOneMenu  id="establishmentFilter"
-                            style="width:145px;"
-                            onchange="PF('roomTable').filter(); return false;">
-                <f:selectItem noSelectionOption="true" itemLabel="" />
-                <f:selectItems itemLabel="#{establishment.name}"
-                            value="#{roomBean.establishments}" 
-                            var="establishment" 
-                            itemValue="#{establishment}" />
-                <o:converter converterId="omnifaces.SelectItemsConverter" list="#{roomBean.establishments}" />
-            </p:selectOneMenu>
-            </f:facet>
-            <h:outputText value="#{room.establishment.name}" />
-          </p:column>
+                    <p:commandButton value="#{messages.create_new_room}" icon="ui-icon-plusthick"
+                                     action="#{roomBean.prepareNewRoom()}"
+                                     resetValues="true" update=":editRoomDialog"
+                                     oncomplete="PF('editRoomDialogWidget').show()"
+                                     style="float:left"/>
 
-            <p:column  headerText="#{messages.field_label_room_description}" sortBy="#{room.description}" filterBy="#{room.description}">
-                <f:facet name="filter">
-                    <p:inputText id="descriptionFilter"
-                                 onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateDescriptionFilter(); return false; }" >
-                        <p:remoteCommand name="updateDescriptionFilter" update="roomTable:nameFilter" />
-                    </p:inputText>
+                    <p:commandButton id="toggler" type="button" value="#{messages.table_select_columns}"
+                                     icon="ui-icon-calculator"/>
+                    <p:columnToggler datasource="roomTable" trigger="toggler"/>
                 </f:facet>
-                <h:outputText value="#{room.description}" />
-            </p:column>
 
-          <p:column  headerText="#{messages.field_label_room_name}" sortBy="#{room.name}" filterBy="#{room.name}">
-            <f:facet name="filter">
-                <p:inputText id="nameFilter"
-                        onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateNameFilter(); return false; }" >
-                    <p:remoteCommand name="updateNameFilter" update="roomTable:nameFilter" />
-                </p:inputText>
-            </f:facet>
-            <h:outputText value="#{room.name}" />
-          </p:column>
+                <p:column headerText="#{messages.label_image}">
+                    <o:graphicImage value="#{room.image.content}" dataURI="true"
+                                    rendered="#{not empty room.image.content}" width="50px"/>
+                </p:column>
 
-          <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115" exportable="false">
-            
-            <p:commandButton icon="ui-icon-zoomin" update=":viewRoomDialog" oncomplete="PF('viewRoomDialogWidget').show()" title="#{messages.label_view}">
-              <f:setPropertyActionListener value="#{room}" target="#{roomBean.room}" />
-            </p:commandButton>
+                <p:column headerText="#{messages.field_label_room_price}" sortBy="#{room.price}"
+                          filterBy="#{room.price}">
+                    <f:facet name="filter">
+                        <p:inputText id="priceFilter"
+                                     onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updatePriceFilter(); return false; }">
+                            <f:convertNumber/>
+                            <p:remoteCommand name="updatePriceFilter" update="roomTable:priceFilter"/>
+                        </p:inputText>
+                    </f:facet>
+                    <h:outputText value="#{room.price}"><f:convertNumber/></h:outputText>
+                </p:column>
 
-            <p:commandButton icon="ui-icon-pencil" update=":editRoomDialog"
-                resetValues="true" 
-                action="#{roomBean.onDialogOpen(room)}"
-                oncomplete="PF('editRoomDialogWidget').show()"
-                title="#{messages.label_edit}" >
-            </p:commandButton>
+                <p:column headerText="#{messages.field_label_room_sizeA}" sortBy="#{room.sizeA}"
+                          filterBy="#{room.sizeA}">
+                    <f:facet name="filter">
+                        <p:inputText id="sizeAFilter"
+                                     onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateSizeAFilter(); return false; }">
+                            <f:convertNumber/>
+                            <p:remoteCommand name="updateSizeAFilter" update="roomTable:sizeAFilter"/>
+                        </p:inputText>
+                    </f:facet>
+                    <h:outputText value="#{room.sizeA}"><f:convertNumber/></h:outputText>
+                </p:column>
 
-            <p:commandButton icon="ui-icon-close" 
-                oncomplete="PF('deleteRoomDialogWidget').show()"
-                title="#{messages.label_delete}" >
-                <f:setPropertyActionListener value="#{room}"
-                    target="#{roomBean.room}" />
-            </p:commandButton>
-    
-          </p:column>
-          
-        </p:dataTable>
-        
-    </h:form>
+                <p:column headerText="#{messages.field_label_room_sizeC}" sortBy="#{room.sizeC}"
+                          filterBy="#{room.sizeC}">
+                    <f:facet name="filter">
+                        <p:inputText id="sizeCFilter"
+                                     onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateSizeCFilter(); return false; }">
+                            <f:convertNumber/>
+                            <p:remoteCommand name="updateSizeCFilter" update="roomTable:sizeCFilter"/>
+                        </p:inputText>
+                    </f:facet>
+                    <h:outputText value="#{room.sizeC}"><f:convertNumber/></h:outputText>
+                </p:column>
 
-    <p:confirmDialog id="deleteRoomDialog" widgetVar="deleteRoomDialogWidget"
-        header="#{messages.label_confirm_deletion}"
-        severity="alarm">
-        <f:facet name="message"><h:outputText value="#{messages.label_delete_record}" escape="false"/></f:facet>
-        <p:outputPanel>
-          <h:form>
-            <div style="text-align: center; margin:10px">
-              <p:commandButton value="#{messages.label_yes}" action="#{roomBean.delete}" update=":roomDataForm :growlForm:growl" oncomplete="PF('deleteRoomDialogWidget').hide()" />
-              <p:commandButton value="#{messages.label_no}" onclick="PF('deleteRoomDialogWidget').hide()" type="button" />
-            </div>
-          </h:form>
-        </p:outputPanel>
-    </p:confirmDialog>
-    
-    <p:dialog dynamic="true" id="editRoomDialog" header="#{messages.label_room_caption}"
-            modal="true" widgetVar="editRoomDialogWidget" maximizable="true">
-        <p:ajax event="close" listener="#{roomBean.reset}"/>
-        <h:form id="editRoomForm" >
-            <p:outputPanel id="roomEditPanel">
-                <ui:include src="/pages/room/roomEditInclude.xhtml"/>
-                <div style="text-align: center; margin:10px">
-                    <p:commandButton value="#{messages.label_save}"
-                            icon="ui-icon-disk" action="#{roomBean.persist}"
-                            update=":editRoomForm:roomEditPanel :roomDataForm :growlForm:growl"
-                            oncomplete="if(!args.validationFailed) PF('editRoomDialogWidget').hide()" />
-                    <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('editRoomDialogWidget').hide()" type="button" />
-                </div>
-            </p:outputPanel>
+                <p:column headerText="#{messages.field_label_room_establishment}" sortBy="#{room.establishment}"
+                          filterBy="#{room.establishment}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu id="establishmentFilter"
+                                         style="width:145px;"
+                                         onchange="PF('roomTable').filter(); return false;">
+                            <f:selectItem noSelectionOption="true" itemLabel=""/>
+                            <f:selectItems itemLabel="#{establishment.name}"
+                                           value="#{roomBean.establishments}"
+                                           var="establishment"
+                                           itemValue="#{establishment}"/>
+                            <o:converter converterId="omnifaces.SelectItemsConverter"
+                                         list="#{roomBean.establishments}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{room.establishment.name}"/>
+                </p:column>
+
+                <p:column headerText="#{messages.field_label_room_description}" sortBy="#{room.description}"
+                          filterBy="#{room.description}">
+                    <f:facet name="filter">
+                        <p:inputText id="descriptionFilter"
+                                     onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateDescriptionFilter(); return false; }">
+                            <p:remoteCommand name="updateDescriptionFilter" update="roomTable:nameFilter"/>
+                        </p:inputText>
+                    </f:facet>
+                    <h:outputText value="#{room.description}"/>
+                </p:column>
+
+                <p:column headerText="#{messages.field_label_room_name}" sortBy="#{room.name}" filterBy="#{room.name}">
+                    <f:facet name="filter">
+                        <p:inputText id="nameFilter"
+                                     onkeypress="if (event.keyCode == 13) {PF('roomTable').filter(); updateNameFilter(); return false; }">
+                            <p:remoteCommand name="updateNameFilter" update="roomTable:nameFilter"/>
+                        </p:inputText>
+                    </f:facet>
+                    <h:outputText value="#{room.name}"/>
+                </p:column>
+
+                <p:column styleClass="action-column" headerText="#{messages.table_actions_column}" width="115"
+                          exportable="false">
+
+                    <p:commandButton icon="ui-icon-zoomin" update=":viewRoomDialog"
+                                     oncomplete="PF('viewRoomDialogWidget').show()" title="#{messages.label_view}">
+                        <f:setPropertyActionListener value="#{room}" target="#{roomBean.room}"/>
+                    </p:commandButton>
+
+                    <p:commandButton icon="ui-icon-pencil" update=":editRoomDialog"
+                                     resetValues="true"
+                                     action="#{roomBean.onDialogOpen(room)}"
+                                     oncomplete="PF('editRoomDialogWidget').show()"
+                                     title="#{messages.label_edit}">
+                    </p:commandButton>
+
+                    <p:commandButton icon="ui-icon-close"
+                                     oncomplete="PF('deleteRoomDialogWidget').show()"
+                                     title="#{messages.label_delete}">
+                        <f:setPropertyActionListener value="#{room}"
+                                                     target="#{roomBean.room}"/>
+                    </p:commandButton>
+
+                </p:column>
+
+            </p:dataTable>
+
         </h:form>
-    </p:dialog>
-    
-    <p:dialog dynamic="true" id="viewRoomDialog" header="#{messages.label_room_caption}" modal="true" widgetVar="viewRoomDialogWidget" maximizable="true">
-        <p:ajax event="close" listener="#{roomBean.reset}" />
-        <h:form id="viewRoomForm">
-          <ui:include src="/pages/room/roomViewInclude.xhtml"/>
-          <div style="text-align: center; margin:10px">
-              <p:commandButton value="#{messages.label_close}" icon="ui-icon-close" onclick="PF('viewRoomDialogWidget').hide()" type="button" />
-          </div>
-        </h:form>
-    </p:dialog>
-    
-    <p:dialog dynamic="true" id="createEstablishmentFromEditDialog"
-        header="#{messages.dialog_room_create_establishment}" modal="true"
-        widgetVar="createEstablishmentFromEditDialogWidget" maximizable="true">
-        <p:ajax event="close" listener="#{establishmentBean.reset}" />
-        <p:outputPanel id="createEstablishmentPanel">
-                <h:form id="createEstablishmentForm">
-                    <ui:include src="/pages/establishment/establishmentEditInclude.xhtml">
-                        <ui:param name="hideRoomSelectInput" value="true" />
-                    </ui:include>
-                    <div style="text-align: center; margin: 10px">
-                        <p:commandButton
-                            action="#{roomBean.updateEstablishment(establishmentBean.establishment)}"
-                            value="#{messages.label_save}" icon="ui-icon-disk"
-                            actionListener="#{establishmentBean.persist}"
-                            update=":editRoomForm:establishmentSelectInput :createEstablishmentPanel :growlForm:growl"
-                            oncomplete="if(!args.validationFailed) PF('createEstablishmentFromEditDialogWidget').hide()" />
-                        <p:commandButton value="#{messages.label_close}"
-                            icon="ui-icon-close"
-                            onclick="PF('createEstablishmentFromEditDialogWidget').hide()"
-                            type="button" />
+
+        <p:confirmDialog id="deleteRoomDialog" widgetVar="deleteRoomDialogWidget"
+                         header="#{messages.label_confirm_deletion}"
+                         severity="alarm">
+            <f:facet name="message"><h:outputText value="#{messages.label_delete_record}" escape="false"/></f:facet>
+            <p:outputPanel>
+                <h:form>
+                    <div style="text-align: center; margin:10px">
+                        <p:commandButton value="#{messages.label_yes}" action="#{roomBean.delete}"
+                                         update=":roomDataForm :growlForm:growl"
+                                         oncomplete="PF('deleteRoomDialogWidget').hide()"/>
+                        <p:commandButton value="#{messages.label_no}" onclick="PF('deleteRoomDialogWidget').hide()"
+                                         type="button"/>
                     </div>
                 </h:form>
             </p:outputPanel>
-    </p:dialog>
-    
-  </ui:define>
+        </p:confirmDialog>
+
+        <p:dialog dynamic="true" id="editRoomDialog" header="#{messages.label_room_caption}"
+                  modal="true" widgetVar="editRoomDialogWidget" maximizable="true">
+            <p:ajax event="close" listener="#{roomBean.reset}"/>
+            <h:form id="editRoomForm">
+                <p:outputPanel id="roomEditPanel">
+                    <ui:include src="/pages/room/roomEditInclude.xhtml"/>
+                    <div style="text-align: center; margin:10px">
+                        <p:commandButton value="#{messages.label_save}"
+                                         icon="ui-icon-disk" action="#{roomBean.persist}"
+                                         update=":editRoomForm:roomEditPanel :roomDataForm :growlForm:growl"
+                                         oncomplete="if(!args.validationFailed) PF('editRoomDialogWidget').hide()"/>
+                        <p:commandButton value="#{messages.label_close}" icon="ui-icon-close"
+                                         onclick="PF('editRoomDialogWidget').hide()" type="button"/>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog dynamic="true" id="viewRoomDialog" header="#{messages.label_room_caption}" modal="true"
+                  widgetVar="viewRoomDialogWidget" maximizable="true">
+            <p:ajax event="close" listener="#{roomBean.reset}"/>
+            <h:form id="viewRoomForm">
+                <ui:include src="/pages/room/roomViewInclude.xhtml"/>
+                <div style="text-align: center; margin:10px">
+                    <p:commandButton value="#{messages.label_close}" icon="ui-icon-close"
+                                     onclick="PF('viewRoomDialogWidget').hide()" type="button"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog dynamic="true" id="createEstablishmentFromEditDialog"
+                  header="#{messages.dialog_room_create_establishment}" modal="true"
+                  widgetVar="createEstablishmentFromEditDialogWidget" maximizable="true">
+            <p:ajax event="close" listener="#{establishmentBean.reset}"/>
+            <p:outputPanel id="createEstablishmentPanel">
+                <h:form id="createEstablishmentForm">
+                    <ui:include src="/pages/establishment/establishmentEditInclude.xhtml">
+                        <ui:param name="hideRoomSelectInput" value="true"/>
+                    </ui:include>
+                    <div style="text-align: center; margin: 10px">
+                        <p:commandButton
+                                action="#{roomBean.updateEstablishment(establishmentBean.establishment)}"
+                                value="#{messages.label_save}" icon="ui-icon-disk"
+                                actionListener="#{establishmentBean.persist}"
+                                update=":editRoomForm:establishmentSelectInput :createEstablishmentPanel :growlForm:growl"
+                                oncomplete="if(!args.validationFailed) PF('createEstablishmentFromEditDialogWidget').hide()"/>
+                        <p:commandButton value="#{messages.label_close}"
+                                         icon="ui-icon-close"
+                                         onclick="PF('createEstablishmentFromEditDialogWidget').hide()"
+                                         type="button"/>
+                    </div>
+                </h:form>
+            </p:outputPanel>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>
 </html>

@@ -13,9 +13,15 @@
     </p:panel>
     
     <h:panelGrid columns="2" styleClass="dialog" columnClasses="col1,col2" >
-        
+
         <h:outputText value="#{messages.field_label_room_price}:" />
         <h:outputText value="#{roomBean.room.price}" ><f:convertNumber /></h:outputText>
+
+        <h:outputText value="#{messages.field_label_room_sizeA}:" />
+        <h:outputText value="#{roomBean.room.sizeA}" ><f:convertNumber /></h:outputText>
+
+        <h:outputText value="#{messages.field_label_room_sizeC}:" />
+        <h:outputText value="#{roomBean.room.sizeC}" ><f:convertNumber /></h:outputText>
 
         <h:outputText value="#{messages.field_label_room_establishment}:" />
         <h:outputText value="#{roomBean.room.establishment.name}" />

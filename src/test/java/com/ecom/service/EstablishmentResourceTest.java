@@ -33,7 +33,7 @@ import java.net.URL;
 public class EstablishmentResourceTest {
     @Deployment
     public static WebArchive createDeployment() {
-        return ArquDeployment.create().addClass(EstablishmentResource.class);
+        return ArquDeployment.create().addClass(EstablishmentResource.class).deleteClass(DatabaseCreator.class);
     }
 
     @BeforeClass
@@ -50,6 +50,7 @@ public class EstablishmentResourceTest {
         ResteasyWebTarget target = client.target(url.toString() + "api");
         EstablishmentClient service = target.proxy(EstablishmentClient.class);
         String jsonResult = service.getEstablishments();
+        System.out.println(jsonResult);
         assert jsonResult.equals("[]");
     }
 
@@ -70,13 +71,14 @@ public class EstablishmentResourceTest {
 
     @Test
     @RunAsClient
-    @InSequence(1)
+    @InSequence(3)
     public void getEstablishmentsPopulated(@ArquillianResource URL url) {
         ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target(url.toString() + "api");
         EstablishmentClient service = target.proxy(EstablishmentClient.class);
         String jsonResult = service.getEstablishments();
-        assert !jsonResult.equals("[]");
+        System.out.println(jsonResult);
+        assert !jsonResult.equals("[]") : "Database should be populated, but result is "+jsonResult;
     }
 
     @Path("/establishments")

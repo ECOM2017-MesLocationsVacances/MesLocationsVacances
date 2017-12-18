@@ -1,14 +1,13 @@
 package com.ecom.domain;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity(name="Room")
 @Table(name="\"ROOM\"")
@@ -24,6 +23,14 @@ public class RoomEntity extends BaseEntity implements Serializable {
     @Column(precision = 6, scale = 2, name="\"price\"")
     @NotNull
     private BigDecimal price;
+
+    @Column(name="\"sizeA\"")
+    @NotNull
+    private int sizeA;
+
+    @Column(name="\"sizeC\"")
+    @NotNull
+    private int sizeC;
 
     @ManyToOne(optional=false)
     @JoinColumn(name = "ESTABLISHMENT_ID", referencedColumnName = "ID")
@@ -53,6 +60,22 @@ public class RoomEntity extends BaseEntity implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public int getSizeA() {
+        return sizeA;
+    }
+
+    public void setSizeA(int sizeA) {
+        this.sizeA = sizeA;
+    }
+
+    public int getSizeC() {
+        return sizeC;
+    }
+
+    public void setSizeC(int sizeC) {
+        this.sizeC = sizeC;
     }
 
     public EstablishmentEntity getEstablishment() {

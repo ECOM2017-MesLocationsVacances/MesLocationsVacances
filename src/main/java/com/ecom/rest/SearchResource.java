@@ -25,21 +25,38 @@ public class SearchResource implements Serializable {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<EstablishmentEntity> getFreeEstablishments(@QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("place") String place, @QueryParam("duration") Long duration) {
+    public List<EstablishmentEntity> getFreeEstablishments(@QueryParam("place") String place,
+                                                           @QueryParam("sizeA") Integer sizeA, @QueryParam("sizeC") Integer sizeC,
+                                                           @QueryParam("from") Long from, @QueryParam("to") Long to,
+                                                           @QueryParam("duration") Long duration) {
         if (place == null) place = "";
+        if (sizeA == null) sizeA = 0;
+        if (sizeC == null) sizeC = 0;
         if (from == null) from = Long.MAX_VALUE;
         if (to == null) to = Long.MAX_VALUE;
         if (duration == null) duration = to - from;
-        return establishmentService.findFreeEstablishmentsForDuration(new Date(from), new Date(to), duration, place);
+        return establishmentService.findFreeEstablishmentsForDuration(place, sizeA, sizeC, new Date(from), new Date(to), duration);
     }
 
     @GET
     @Path("/{establishment}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFreeRoomsInEstablishments(@PathParam("establishment") Long establishment, @QueryParam("from") Long from, @QueryParam("to") Long to, @QueryParam("duration") Long duration) {
+    public Response getFreeRoomsInEstablishments(@PathParam("establishment") Long establishment,
+                                                 @QueryParam("sizeA") Integer sizeA, @QueryParam("sizeC") Integer sizeC,
+                                                 @QueryParam("from") Long from, @QueryParam("to") Long to,
+                                                 @QueryParam("duration") Long duration) {
+        if (sizeA == null) sizeA = 0;
+        if (sizeC == null) sizeC = 0;
         if (from == null) from = Long.MAX_VALUE;
         if (to == null) to = Long.MAX_VALUE;
         if (duration == null) duration = to - from;
-        return Response.ok(roomService.findFreeRoomsInEstablishmentForDuration(new Date(from), new Date(to), duration, establishmentService.find(establishment))).build();
+        return Response.ok(
+                roomService.findFreeRoomsInEstablishmentForDuration(
+                        establishmentService.find(establishment),
+                        sizeA, sizeC,
+                        new Date(from), new Date(to),
+                        duration
+                )
+        ).build();
     }
 }

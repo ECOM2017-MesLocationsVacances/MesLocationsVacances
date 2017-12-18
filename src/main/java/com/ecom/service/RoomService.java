@@ -75,16 +75,23 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
     }
 
     @Transactional
-    public List<RoomEntity> findFreeRoomsInEstablishmentForDuration(Date from, Date to, Long time, EstablishmentEntity establishment) {
+    public List<RoomEntity> findFreeRoomsInEstablishmentForDuration(EstablishmentEntity establishment,
+                                                                    int sizeA, int sizeC,
+                                                                    Date from, Date to,
+                                                                    long time) {
         List<RoomEntity> freeRooms =
                 entityManager.createQuery(
                         "SELECT o " +
                                 "FROM Room o " +
                                 "WHERE o.establishment = :establishment " +
+                                "AND o.sizeA >= :sizeA " +
+                                "AND o.sizeC >= :sizeC " +
                                 "AND o.id NOT IN (" +
                                 "SELECT r.room.id " +
                                 "FROM Reservation r " +
                                 "WHERE r.room.establishment = :establishment "+
+                                "AND r.room.sizeA >= :sizeA " +
+                                "AND r.room.sizeC >= :sizeC " +
                                 "AND ((r.startdate > :startDate AND r.startdate < :endDate) " +
                                 "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
                                 "OR (r.startdate < :startDate AND r.enddate > :endDate))" +
@@ -92,12 +99,16 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
                         .setParameter("establishment", establishment)
                         .setParameter("startDate", from, TemporalType.DATE)
                         .setParameter("endDate", to, TemporalType.DATE)
+                        .setParameter("sizeA", sizeA)
+                        .setParameter("sizeC", sizeC)
                         .getResultList();
         List<ReservationEntity> reservationsUnsorted =
                 entityManager.createQuery(
                         "SELECT r " +
                                 "FROM Reservation r " +
                                 "WHERE r.room.establishment = :establishment "+
+                                "AND r.room.sizeA >= :sizeA " +
+                                "AND r.room.sizeC >= :sizeC " +
                                 "AND ((r.startdate > :startDate AND r.startdate < :endDate) " +
                                 "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
                                 "OR (r.startdate < :startDate AND r.enddate > :endDate))"
@@ -105,6 +116,8 @@ public class RoomService extends BaseService<RoomEntity> implements Serializable
                         .setParameter("establishment", establishment)
                         .setParameter("startDate", from, TemporalType.DATE)
                         .setParameter("endDate", to, TemporalType.DATE)
+                        .setParameter("sizeA", sizeA)
+                        .setParameter("sizeC", sizeC)
                         .getResultList();
         HashMap<RoomEntity, ArrayList<ReservationEntity>> reservationsByRoom = new HashMap<>();
         for (ReservationEntity reservation : reservationsUnsorted) {

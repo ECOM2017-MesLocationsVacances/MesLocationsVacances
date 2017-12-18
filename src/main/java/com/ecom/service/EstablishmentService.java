@@ -85,17 +85,24 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
     }
 
     @Transactional
-    public List<EstablishmentEntity> findFreeEstablishmentsForDuration(Date from, Date to, Long duration, String place) {
+    public List<EstablishmentEntity> findFreeEstablishmentsForDuration(String place,
+                                                                       int sizeA, int sizeC,
+                                                                       Date from, Date to,
+                                                                       long duration) {
         place = "%" + place + "%";
         List<EstablishmentEntity> fullyFree =
                 entityManager.createQuery(
                         "SELECT DISTINCT o.establishment " +
                                 "FROM Room o " +
                                 "WHERE o.establishment.place LIKE :place " +
+                                "AND o.sizeA >= :sizeA " +
+                                "AND o.sizeC >= :sizeC " +
                                 "AND o.id NOT IN (" +
                                 "SELECT r.room.id " +
                                 "FROM Reservation r " +
                                 "WHERE r.room.establishment.place LIKE :place "+
+                                "AND r.room.sizeA >= :sizeA " +
+                                "AND r.room.sizeC >= :sizeC " +
                                 "AND ((r.startdate > :startDate AND r.startdate < :endDate) " +
                                 "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
                                 "OR (r.startdate < :startDate AND r.enddate > :endDate))" +
@@ -103,12 +110,16 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
                         .setParameter("place", place)
                         .setParameter("startDate", from, TemporalType.DATE)
                         .setParameter("endDate", to, TemporalType.DATE)
+                        .setParameter("sizeA", sizeA)
+                        .setParameter("sizeC", sizeC)
                         .getResultList();
         List<ReservationEntity> reservationsUnsorted =
                 entityManager.createQuery(
                         "SELECT r " +
                                 "FROM Reservation r " +
                                 "WHERE r.room.establishment.place LIKE :place "+
+                                "AND r.room.sizeA >= :sizeA " +
+                                "AND r.room.sizeC >= :sizeC " +
                                 "AND ((r.startdate > :startDate AND r.startdate < :endDate) " +
                                 "OR (r.enddate < :endDate AND r.enddate > :startDate)" +
                                 "OR (r.startdate < :startDate AND r.enddate > :endDate))"
@@ -116,6 +127,8 @@ public class EstablishmentService extends BaseService<EstablishmentEntity> imple
                         .setParameter("place", place)
                         .setParameter("startDate", from, TemporalType.DATE)
                         .setParameter("endDate", to, TemporalType.DATE)
+                        .setParameter("sizeA", sizeA)
+                        .setParameter("sizeC", sizeC)
                         .getResultList();
         HashMap<RoomEntity, ArrayList<ReservationEntity>> reservationsByRoom = new HashMap<>();
         for (ReservationEntity reservation : reservationsUnsorted) {

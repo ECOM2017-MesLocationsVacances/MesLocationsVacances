@@ -33,7 +33,7 @@ import java.net.URL;
 public class EstablishmentResourceTest {
     @Deployment
     public static WebArchive createDeployment() {
-        return ArquDeployment.create().addClass(EstablishmentResource.class).deleteClass(DatabaseCreator.class);
+        return ArquDeployment.create().addClass(EstablishmentResource.class);
     }
 
     @BeforeClass

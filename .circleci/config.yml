@@ -24,11 +24,11 @@ jobs:
       - run:
           name: Build JavaEE application (mvn package)
           command: |
-            mvn package
+            mvn package -Dmaven.test.skip=true
       - run:
           name: Run tests
           command: |
-            mvn test
+            mvn test -P !default wildfly-managed
       - restore_cache:
           keys:
             - v1-{{ .Branch }}

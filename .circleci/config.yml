@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            mvn test -P !default wildfly-managed
+            mvn test -P !default,wildfly-managed
       - restore_cache:
           keys:
             - v1-{{ .Branch }}

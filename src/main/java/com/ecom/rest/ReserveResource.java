@@ -6,6 +6,7 @@ import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
 import com.ecom.service.ReservationService;
 import com.ecom.service.RoomService;
+import com.ecom.service.security.RegistrationMailSender;
 import com.ecom.service.security.SecurityWrapper;
 import com.ecom.service.security.UserService;
 
@@ -41,6 +42,8 @@ public class ReserveResource implements Serializable {
             reservation.setCreateddate(new Date());
             reservation.setStatus(ReservationStatus.Confirmed);
             reservationService.save(reservation);
+            RegistrationMailSender.sendConfirmation(user.getEmail(), reservation, true, false);
+            RegistrationMailSender.sendConfirmation(room.getEstablishment().getManager().getEmail(), reservation, false, false);
             response = Response.ok("Bon voyage!").build();
         } else
             response = Response.status(Response.Status.UNAUTHORIZED).entity("Wrong login or password " + password).build();

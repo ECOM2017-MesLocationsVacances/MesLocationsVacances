@@ -7,6 +7,7 @@ import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
 import com.ecom.service.ReservationService;
 import com.ecom.service.RoomService;
+import com.ecom.service.security.RegistrationMailSender;
 import com.ecom.service.security.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -138,6 +139,7 @@ public class PayPalResource implements Serializable {
         }
         reservation.setStatus(ReservationStatus.Confirmed);
         reservationService.update(reservation);
+        RegistrationMailSender.sendConfirmation(reservation.getRoom().getEstablishment().getManager().getEmail(), reservation, false, false);
         return Response.ok().build();
     }
 

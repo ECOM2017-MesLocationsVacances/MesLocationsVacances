@@ -1,17 +1,12 @@
 package com.ecom.domain;
 
 import com.ecom.domain.security.UserEntity;
+import com.ecom.domain.security.UserStatus;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,6 +40,10 @@ public class ReservationEntity extends BaseEntity implements Serializable {
     @ManyToOne(optional=true)
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private UserEntity user;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private ReservationStatus status;
 
     public Date getCreateddate() {
         return this.createddate;
@@ -86,4 +85,11 @@ public class ReservationEntity extends BaseEntity implements Serializable {
         this.user = user;
     }
 
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
 }

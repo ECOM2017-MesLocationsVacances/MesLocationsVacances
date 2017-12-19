@@ -1,0 +1,3 @@
+From this folder, execute:
+
+spectacle -l logo.png ../../../target/jaxrs-analyzer/swagger.json

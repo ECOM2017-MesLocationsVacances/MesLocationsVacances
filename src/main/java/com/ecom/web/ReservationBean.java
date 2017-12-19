@@ -1,6 +1,7 @@
 package com.ecom.web;
 
 import com.ecom.domain.ReservationEntity;
+import com.ecom.domain.ReservationStatus;
 import com.ecom.domain.RoomEntity;
 import com.ecom.domain.security.UserEntity;
 import com.ecom.service.ReservationService;
@@ -64,6 +65,7 @@ public class ReservationBean implements Serializable {
                 reservation = reservationService.update(reservation);
                 message = "message_successfully_updated";
             } else {
+                reservation.setStatus(ReservationStatus.Confirmed);
                 reservation = reservationService.save(reservation);
                 message = "message_successfully_created";
             }
